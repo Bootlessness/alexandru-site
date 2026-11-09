@@ -1,4 +1,6 @@
 import { createFallingShapes, eraseSegment } from "./shapes.js";
+import { copySketchAsSvg } from "./export-svg.js";
+import { paperTile } from "./paper-grain.js";
 
 (() => {
   "use strict";
@@ -12,6 +14,8 @@ import { createFallingShapes, eraseSegment } from "./shapes.js";
   const clearButton = document.getElementById("clear-drawing");
   const status = document.getElementById("drawing-status");
   const hint = document.querySelector(".drawing-hint");
+  const titleColor = document.querySelector(".title-color");
+  if (titleColor) document.body.style.setProperty("--paper-grain", paperTile());
   const shapes = createFallingShapes(canvas, context, (count) => {
     status.textContent = count === 1 ? "A shape detached." : count + " shapes detached.";
   });
@@ -209,10 +213,18 @@ import { createFallingShapes, eraseSegment } from "./shapes.js";
   canvas.addEventListener("pointercancel", finishStroke);
   canvas.addEventListener("lostpointercapture", finishStroke);
 
-  window.addEventListener("pointermove", positionCursor, { passive: true });
+  window.addEventListener("pointermove", (event) => {
+    positionCursor(event);
+    if (!titleColor || event.pointerType !== "mouse") return;
+    const { left, top } = titleColor.getBoundingClientRect();
+    titleColor.style.setProperty("--reveal-x", event.clientX - left + "px");
+    titleColor.style.setProperty("--reveal-y", event.clientY - top + "px");
+  }, { passive: true });
   document.documentElement.addEventListener("pointerleave", () => {
     cursorVisible = false;
     cursor.style.opacity = "0";
+    titleColor?.style.removeProperty("--reveal-x");
+    titleColor?.style.removeProperty("--reveal-y");
   });
   window.addEventListener("keydown", (event) => {
     if (event.key === "Meta" && !commandHeld) {
@@ -248,6 +260,18 @@ import { createFallingShapes, eraseSegment } from "./shapes.js";
     shapes.clear();
     status.textContent = "Drawing cleared.";
   });
+  const copyButton = document.getElementById("copy-svg");
+  if (copyButton) {
+    let resetCopyLabel;
+    copyButton.addEventListener("click", async () => {
+      const copied = await copySketchAsSvg();
+      const message = copied ? "Copied SVG" : "Downloaded SVG";
+      status.textContent = message + ".";
+      copyButton.textContent = message;
+      clearTimeout(resetCopyLabel);
+      resetCopyLabel = setTimeout(() => { copyButton.textContent = "Copy SVG"; }, 1800);
+    });
+  }
   window.addEventListener("resize", () => {
     cancelAnimationFrame(resizeFrame);
     resizeFrame = requestAnimationFrame(resizeCanvas);

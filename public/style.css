@@ -55,9 +55,10 @@ body {
 [data-theme="dark"] body {
   background-image:
     linear-gradient(to right, var(--grid-line) 1px, transparent 1px), /* taste-skill-ignore: requested graph-paper grid. */
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px); /* taste-skill-ignore: requested graph-paper grid. */
-  background-size: 32px 32px;
-  background-position: center;
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px), /* taste-skill-ignore: requested graph-paper grid. */
+    var(--paper-grain, none);
+  background-size: 32px 32px, 32px 32px, auto;
+  background-position: center, center, 0 0;
 }
 
 #drawing-canvas, #falling-shapes {
@@ -90,10 +91,25 @@ body {
 }
 
 h1 {
+  position: relative;
   margin: 0;
   font: 400 clamp(58px, 7.3vw, 106px) / 1.05 var(--font-display);
   letter-spacing: -0.035em;
   text-wrap: balance;
+}
+
+h1:has(.title-color) {
+  text-shadow: 0 0 24px #e9d7ba42; /* taste-skill-ignore: requested gentle title glow. */
+}
+
+.title-color {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  text-shadow: none; /* taste-skill-ignore: the underlying title already carries the glow. */
+  background: linear-gradient(105deg, #da7584 18%, #e0a45f 34%, #7fb482 49%, #6aa9cc 64%, #b784cf 81%); /* taste-skill-ignore: the requested rainbow is clipped to the title. */
+  background-clip: text; /* taste-skill-ignore: clips the requested hover colors to the letters. */
+  mask-image: radial-gradient(circle 80px at var(--reveal-x, -100px) var(--reveal-y, -100px), black 30%, transparent); /* taste-skill-ignore: the pointer reveals the title colors within 80px. */
 }
 
 .introduction-copy {
