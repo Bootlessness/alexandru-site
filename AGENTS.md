@@ -1,3 +1,5 @@
+Course tools: registered as Alexandru, https://alexandru-site.alex-oprea-ao.workers.dev. On Tuesday, pass this name (the one I like to be called) to the PMUX course tools.
+
 # My site's agent
 
 This folder is my personal website. It is public on GitHub and on Cloudflare. I'm a PM and UX student, not a programmer, so talk plainly and keep answers short. New here? Start with `SETUP.md`.
