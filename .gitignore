@@ -1,0 +1,8 @@
+.DS_Store
+.wrangler/
+.taste-skill/
+node_modules/
+.env*
+data/*
+!data/README.md
+!data/public/

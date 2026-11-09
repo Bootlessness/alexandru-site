@@ -1,0 +1,8 @@
+{
+  // Cloudflare reads this file to put your site online.
+  // "name" must be your repository's name, for example "mika-site".
+  "name": "my-site",
+  "compatibility_date": "2026-11-01",
+  // Everything in public/ is your website. Nothing else in this folder is published.
+  "assets": { "directory": "./public" }
+}
