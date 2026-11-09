@@ -21,7 +21,7 @@
   <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Close a loop to make it fall. Hold Command while dragging to erase."></canvas>
   <div id="drawing-cursor" aria-hidden="true"></div>
 
-  <main class="page crossword-page">
+  <main class="page crossword-page" data-type-pair="wayfinding">
     <section class="introduction crossword" aria-labelledby="name">
       <h1 id="name" class="crossword-name">
         <button type="button" class="name-toggle" aria-label="Alexandru Oprea" aria-controls="crossword-menu" aria-expanded="false">
@@ -96,6 +96,14 @@
   <aside class="blueprint-note" aria-hidden="true">Layout notes · 32 px grid · outlines show container bounds</aside>
   <details class="crossword-settings">
     <summary>Settings</summary>
+    <label for="type-pair">Type pair
+      <select id="type-pair">
+        <option value="original">Original · Instrument Serif / DM Sans</option>
+        <option value="workshop">Workshop · Arial Black / DM Sans</option>
+        <option value="technical">Technical · Menlo / Helvetica Neue</option>
+        <option value="wayfinding" selected>Wayfinding · Arial / Menlo</option>
+      </select>
+    </label>
     <label for="menu-size">
     Menu size
     <input id="menu-size" type="range" min="20" max="100" value="23" aria-controls="crossword-menu">

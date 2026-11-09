@@ -1,5 +1,5 @@
 .crossword {
-  --name-size: clamp(44px, min(13.4vw, 19svh), 132px);
+  --name-size: calc(clamp(44px, min(13.4vw, 19svh), 132px) * var(--name-scale, 1));
   --default-row: clamp(19px, min(3.5vw, 5.3svh), 32px);
   --menu-size: calc(var(--default-row) * .96);
   --row: calc(var(--menu-size) / .96);
@@ -45,6 +45,8 @@
 }
 
 .crossword-name {
+  font-family: var(--font-display);
+  font-weight: var(--name-weight, 400);
   font-size: var(--name-size);
   line-height: 1;
   letter-spacing: -0.025em;
@@ -80,7 +82,7 @@
   --name-ink: var(--ink);
   display: inline-block;
   color: transparent;
-  background-image: radial-gradient(circle 80px at var(--local-x, -100px) var(--local-y, -100px), var(--hue) 24px, transparent 80px), linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: localized rainbow on the name. */
+  background-image: radial-gradient(circle 160px at var(--local-x, -200px) var(--local-y, -200px), var(--hue) 48px, transparent 160px), linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: localized rainbow on the name. */
   background-clip: text; /* taste-skill-ignore: clips the existing hover effect to the letters. */
 }
 
@@ -124,7 +126,7 @@
   padding: 0;
   transform: translateX(-50%);
   color: var(--ink);
-  font: 400 var(--menu-size) / var(--row) var(--font-display);
+  font: var(--name-weight, 400) var(--menu-size) / var(--row) var(--font-display);
   text-align: center;
   text-decoration: none;
   pointer-events: auto;
@@ -160,7 +162,7 @@
 }
 
 .crossword-panel::backdrop { background: #111318a6; }
-.crossword-panel h2 { margin: 0; font: 400 44px / 1 var(--font-display); }
+.crossword-panel h2 { margin: 0; font: var(--name-weight, 400) 44px / 1 var(--font-display); }
 .crossword-panel button { padding-inline: 0; }
 
 @media (max-width: 520px) {
@@ -408,7 +410,7 @@ body[data-playground="on"] .drawing-hint {
 }
 
 .crossword-page .crossword-message {
-  top: calc(50% + clamp(22px, min(6.7vw, 9.5svh), 66px) + 40px);
+  top: calc(50% + clamp(22px, min(6.7vw, 9.5svh), 66px) * var(--name-scale, 1) + 40px);
   bottom: auto;
 }
 
@@ -495,7 +497,7 @@ body[data-playground="on"] .drawing-hint {
 [data-theme="light"] :is(.crossword-name, .crossword-message, .crossword-dock)::before,
 [data-theme="light"] .blueprint-note {
   color: var(--annotation);
-  font: 11px / 1.3 ui-monospace, monospace;
+  font: 11px / 1.3 var(--font-text);
   letter-spacing: normal;
 }
 
@@ -508,4 +510,33 @@ body[data-playground="on"] .drawing-hint {
 
   .theme-toggle:active { transform: none; }
   [data-theme="light"] .blueprint-note { top: max(108px, calc(env(safe-area-inset-top) + 100px)); }
+}
+
+.crossword-settings select {
+  grid-column: 2 / -1;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--ink);
+  background: var(--paper);
+  font: inherit;
+}
+
+body:has(.crossword-page[data-type-pair="workshop"]) {
+  --font-display: "Arial Black", Arial, sans-serif;
+  --name-weight: 900;
+  --name-scale: .76;
+}
+
+body:has(.crossword-page[data-type-pair="technical"]) {
+  --font-display: Menlo, Consolas, monospace;
+  --name-weight: 700;
+  --name-scale: .68;
+  --font-text: "Helvetica Neue", Arial, sans-serif;
+}
+
+body:has(.crossword-page[data-type-pair="wayfinding"]) {
+  --font-display: Arial, Helvetica, sans-serif;
+  --name-weight: 700;
+  --name-scale: .8;
+  --font-text: Menlo, Consolas, monospace;
 }

@@ -431,3 +431,8 @@ if (themeToggle) {
     measureBlueprint();
   });
 }
+
+document.getElementById("type-pair")?.addEventListener("change", (event) => {
+  page.dataset.typePair = event.target.value;
+  if (document.body.dataset.playground !== "on") setOpen(true);
+});
