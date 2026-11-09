@@ -9,10 +9,13 @@
   <link rel="preload" href="/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/fonts/dm-sans.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/style.css">
-  <script src="/drawing.js" defer></script>
+  <script src="/vendor/gsap.min.js" defer></script>
+  <script src="/vendor/Physics2DPlugin.min.js" defer></script>
+  <script type="module" src="/drawing.js"></script>
 </head>
 <body>
-  <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Drag to draw; hold Command while dragging to erase."></canvas>
+  <canvas id="falling-shapes" aria-hidden="true"></canvas>
+  <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Close a loop to make it fall. Hold Command while dragging to erase."></canvas>
   <div id="drawing-cursor" aria-hidden="true"></div>
 
   <main class="page">
@@ -34,7 +37,7 @@
     </button>
     <button id="clear-drawing" type="button" aria-controls="drawing-canvas">Clear</button>
   </div>
-  <p class="drawing-hint" hidden>Drag to draw <span aria-hidden="true">·</span> Hold <kbd>⌘</kbd> to erase</p>
+  <p class="drawing-hint" hidden>Close a loop, then grab or throw it <span aria-hidden="true">·</span> Hold <kbd>⌘</kbd> to erase</p>
   <p class="screen-reader-only" id="drawing-status" role="status">Pencil selected.</p>
 </body>
 </html>

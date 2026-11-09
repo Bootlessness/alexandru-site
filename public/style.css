@@ -41,7 +41,7 @@ body {
   overscroll-behavior: none;
 }
 
-#drawing-canvas {
+#drawing-canvas, #falling-shapes {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -50,6 +50,8 @@ body {
   height: 100%;
   touch-action: none;
 }
+
+#falling-shapes { pointer-events: none; }
 
 .page {
   position: relative;
@@ -189,6 +191,8 @@ body[data-drawing-mode="eraser"] #drawing-cursor {
 
 @media (pointer: fine) {
   body.drawing-ready #drawing-canvas { cursor: none; }
+  body.drawing-ready #drawing-canvas[data-cursor="grab"] { cursor: grab; }
+  body.drawing-ready #drawing-canvas[data-cursor="grabbing"] { cursor: grabbing; }
 }
 
 @media (max-width: 480px) {

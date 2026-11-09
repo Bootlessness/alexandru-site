@@ -1,3 +1,5 @@
+import { createFallingShapes, eraseSegment } from "./shapes.js";
+
 (() => {
   "use strict";
 
@@ -10,6 +12,9 @@
   const clearButton = document.getElementById("clear-drawing");
   const status = document.getElementById("drawing-status");
   const hint = document.querySelector(".drawing-hint");
+  const shapes = createFallingShapes(canvas, context, (count) => {
+    status.textContent = count === 1 ? "A shape detached." : count + " shapes detached.";
+  });
   const eraserDiameter = 160 / Math.PI;
   const finePointer = window.matchMedia("(pointer: fine)");
   let pixelRatio = 1;
@@ -17,6 +22,9 @@
   let height = 0;
   let activePointer = null;
   let lastPoint = null;
+  let drewPencil = false;
+  let grabbing = false;
+  const motion = [];
   let eraserSelected = false;
   let commandHeld = false;
   let cursorPoint = null;
@@ -34,6 +42,7 @@
     document.body.dataset.drawingMode = erasing ? "eraser" : "pencil";
     eraserButton.setAttribute("aria-pressed", String(eraserSelected));
     status.textContent = erasing ? "Eraser selected." : "Pencil selected.";
+    updateCursor();
   }
 
   function resizeCanvas() {
@@ -52,6 +61,7 @@
     if (oldWidth && oldHeight) {
       context.drawImage(previous, 0, 0, oldWidth, oldHeight);
     }
+    shapes.resize(width, height, pixelRatio);
   }
 
   function pointFrom(event) {
@@ -59,7 +69,16 @@
       x: event.clientX,
       y: event.clientY,
       pressure: event.pointerType === "pen" ? Math.max(0.08, event.pressure) : 0.48,
+      time: event.timeStamp,
     };
+  }
+
+  function track(point) {
+    motion.push(point);
+    while (motion.length > 2 && motion[1].time < point.time - 95) motion.shift();
+    const first = motion[0];
+    const seconds = Math.max(0.025, (point.time - first.time) / 1000);
+    return { x: (point.x - first.x) / seconds, y: (point.y - first.y) / seconds };
   }
 
   // Individual graphite flecks build up darker where a stroke passes repeatedly.
@@ -96,34 +115,37 @@
     context.restore();
   }
 
-  function eraseSegment(from, to) {
-    context.save();
-    context.globalCompositeOperation = "destination-out";
-    context.globalAlpha = 1;
-    context.lineWidth = eraserDiameter;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    context.beginPath();
-    context.moveTo(from.x, from.y);
-    context.lineTo(to.x, to.y);
-    context.stroke();
-    context.beginPath();
-    context.arc(to.x, to.y, eraserDiameter / 2, 0, Math.PI * 2);
-    context.fill();
-    context.restore();
+  function drawTo(point) {
+    const from = lastPoint || point;
+    const velocity = track(point);
+    if (grabbing) {
+      shapes.move(point);
+      return velocity;
+    }
+    if (isErasing()) {
+      eraseSegment(context, from, point, eraserDiameter);
+      shapes.erase(from, point, eraserDiameter);
+      drewPencil = false;
+    } else {
+      pencilSegment(from, point);
+      shapes.record(from, point, !drewPencil);
+      drewPencil = true;
+    }
+    lastPoint = point;
+    return velocity;
   }
 
-  function drawTo(point) {
-    if (isErasing()) eraseSegment(lastPoint || point, point);
-    else pencilSegment(lastPoint || point, point);
-    lastPoint = point;
+  function updateCursor() {
+    const overShape = cursorVisible && !isErasing() && activePointer === null && shapes.hit(cursorPoint) >= 0;
+    canvas.dataset.cursor = grabbing ? "grabbing" : overShape ? "grab" : "draw";
+    cursor.style.opacity = cursorVisible && !grabbing && !overShape ? "1" : "0";
   }
 
   function positionCursor(event) {
     cursorPoint = { x: event.clientX, y: event.clientY };
     const overControl = event.target.closest && event.target.closest("a, button");
     cursorVisible = finePointer.matches && event.pointerType !== "touch" && (!overControl || activePointer !== null);
-    cursor.style.opacity = cursorVisible ? "1" : "0";
+    updateCursor();
     cursor.style.transform = "translate3d(" + cursorPoint.x + "px," + cursorPoint.y + "px,0) translate(-50%,-50%)";
   }
 
@@ -139,7 +161,10 @@
     event.preventDefault();
     syncCommand(event);
     activePointer = event.pointerId;
+    drewPencil = false;
     lastPoint = pointFrom(event);
+    motion.length = 0;
+    grabbing = !isErasing() && shapes.grab(lastPoint);
     canvas.setPointerCapture(event.pointerId);
     drawTo(lastPoint);
     positionCursor(event);
@@ -149,12 +174,31 @@
     syncCommand(event);
     if (event.pointerId !== activePointer) return;
     const points = typeof event.getCoalescedEvents === "function" ? event.getCoalescedEvents() : [];
-    for (const sample of points.length ? points : [event]) drawTo(pointFrom(sample));
+    let point;
+    let velocity;
+    for (const sample of points.length ? points : [event]) {
+      point = pointFrom(sample);
+      velocity = drawTo(point);
+    }
+    if (!grabbing && drewPencil) shapes.detach(point, velocity);
   });
 
   function finishStroke(event) {
     if (event.pointerId !== activePointer) return;
-    if (event.type === "pointerup") drawTo(pointFrom(event));
+    let velocity = { x: 0, y: 0 };
+    if (event.type === "pointerup") {
+      syncCommand(event);
+      const point = pointFrom(event);
+      velocity = drawTo(point);
+      if (!grabbing && drewPencil) shapes.detach(point, velocity);
+    }
+    endPointer(velocity);
+    positionCursor(event);
+  }
+
+  function endPointer(velocity = { x: 0, y: 0 }) {
+    if (grabbing) shapes.toss(velocity);
+    grabbing = false;
     if (canvas.hasPointerCapture(activePointer)) canvas.releasePointerCapture(activePointer);
     activePointer = null;
     lastPoint = null;
@@ -162,12 +206,7 @@
 
   canvas.addEventListener("pointerup", finishStroke);
   canvas.addEventListener("pointercancel", finishStroke);
-  canvas.addEventListener("lostpointercapture", (event) => {
-    if (event.pointerId === activePointer) {
-      activePointer = null;
-      lastPoint = null;
-    }
-  });
+  canvas.addEventListener("lostpointercapture", finishStroke);
 
   window.addEventListener("pointermove", positionCursor, { passive: true });
   document.documentElement.addEventListener("pointerleave", () => {
@@ -193,9 +232,8 @@
   });
   window.addEventListener("blur", () => {
     commandHeld = false;
-    activePointer = null;
-    lastPoint = null;
-    cursor.style.opacity = "0";
+    if (activePointer !== null) endPointer();
+    cursorVisible = false;
     updateMode();
   });
 
@@ -204,7 +242,9 @@
     updateMode();
   });
   clearButton.addEventListener("click", () => {
+    if (activePointer !== null) endPointer();
     context.clearRect(0, 0, width, height);
+    shapes.clear();
     status.textContent = "Drawing cleared.";
   });
   window.addEventListener("resize", () => {
@@ -217,5 +257,5 @@
   document.body.classList.add("drawing-ready");
   document.querySelector(".drawing-tools").hidden = false;
   hint.hidden = false;
-  if (!finePointer.matches) hint.textContent = "Draw with your finger. Tap Eraser to erase.";
+  if (!finePointer.matches) hint.textContent = "Draw a loop, then drag or flick it.";
 })();
