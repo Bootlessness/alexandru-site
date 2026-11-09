@@ -1,3 +1,4 @@
+import { paintText } from "./export-svg.js";
 import { fly, putOnFloor, rotated } from "./shape-motion.js";
 
 const colors = ["#b8c3ab", "#d9b6a8", "#b1bdc9", "#d6c295", "#c8b5c9"];
@@ -82,6 +83,39 @@ export function createFallingShapes(pencil, pencilContext, announce) {
   let inkAge = new Float32Array(1);
   let possibleCrossing = false;
 
+  const overlap = document.getElementById("shape-text-overlap");
+  let overlapFrame;
+
+  function renderOverlap() {
+    if (!overlap) return;
+    if (overlap.width !== scene.canvas.width) overlap.width = scene.canvas.width;
+    if (overlap.height !== scene.canvas.height) overlap.height = scene.canvas.height;
+    const ink = overlap.getContext("2d");
+    ink.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ink.clearRect(0, 0, width, height);
+    if (!shapes.length) return;
+    paintText(ink, null, ".crossword, .crossword-message, .drawing-tools, .drawing-hint");
+    ink.globalCompositeOperation = "destination-in";
+    ink.drawImage(scene.canvas, 0, 0, width, height);
+    ink.globalCompositeOperation = "source-over";
+  }
+
+  if (overlap) {
+    const queueOverlap = () => {
+      cancelAnimationFrame(overlapFrame);
+      overlapFrame = requestAnimationFrame(renderOverlap);
+    };
+    const titleObserver = new ResizeObserver(queueOverlap);
+    titleObserver.observe(document.querySelector(".name-toggle"));
+    document.body.addEventListener("playgroundchange", queueOverlap);
+    const visibilityObserver = new MutationObserver(queueOverlap);
+    visibilityObserver.observe(document.querySelector(".drawing-hint"), { attributeFilter: ["hidden"] });
+    visibilityObserver.observe(document.querySelector(".crossword"), { attributeFilter: ["data-open"] });
+    window.addEventListener("scroll", queueOverlap, { passive: true });
+    document.querySelector(".crossword-settings")?.addEventListener("input", queueOverlap);
+    document.fonts.ready.then(queueOverlap);
+  }
+
   function render() {
     scene.clearRect(0, 0, width, height);
     for (const shape of shapes) {
@@ -91,6 +125,7 @@ export function createFallingShapes(pencil, pencilContext, announce) {
       scene.drawImage(shape.image, -shape.centerX, -shape.centerY, shape.width, shape.height);
       scene.restore();
     }
+    renderOverlap();
   }
 
   function scheduleRender() {

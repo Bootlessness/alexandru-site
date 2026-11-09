@@ -58,21 +58,21 @@ function setFont(context, style) {
   context.letterSpacing = style.letterSpacing === "normal" ? "0px" : style.letterSpacing;
 }
 
-function paintText(context, halo) {
+export function paintText(context, halo, selector = ".introduction, .drawing-tools, .drawing-hint, .crossword-settings, .crossword-message") {
   const range = document.createRange();
-  for (const root of document.querySelectorAll(".introduction, .drawing-tools, .drawing-hint")) {
+  for (const root of document.querySelectorAll(selector)) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
       if (parent.closest(".title-color, .crossword:not([data-open]) .name-rest")) continue;
       const style = getComputedStyle(parent);
       if (style.visibility !== "visible") continue;
-      context.fillStyle = parent.classList.contains("name-glyph")
+      context.fillStyle = !halo ? "#000" : parent.classList.contains("name-glyph")
         ? style.getPropertyValue("--name-ink").trim()
         : style.color;
       setFont(context, style);
       const glow = style.textShadow.match(/^(rgba?\([^)]+\)) 0px 0px ([\d.]+)px$/);
-      if (glow) {
+      if (glow && halo) {
         setFont(halo, style);
         halo.shadowColor = glow[1];
         halo.shadowBlur = Number(glow[2]) * halo.getTransform().a;
@@ -100,7 +100,7 @@ function paintText(context, halo) {
         const text = node.data.slice(start, end).replace(/\s+/g, " ");
         const baseline = rect.top + (rect.height + ascent - descent) / 2;
         context.fillText(text, rect.left, baseline);
-        if (glow) halo.fillText(text, rect.left + halo.canvas.width / halo.getTransform().a, baseline);
+        if (glow && halo) halo.fillText(text, rect.left + halo.canvas.width / halo.getTransform().a, baseline);
         if (style.textDecorationLine.includes("underline")) {
           context.fillStyle = style.textDecorationColor;
           context.fillRect(rect.left, baseline + 5, context.measureText(text).width, 1);
@@ -139,6 +139,8 @@ function captureSvg() {
   const haloScale = Math.min(0.5, artScale);
   const halo = snapshotContext(width, height, haloScale);
   paintText(text, halo);
+  const overlap = document.getElementById("shape-text-overlap");
+  if (overlap) text.drawImage(overlap, 0, 0, width, height);
 
   const icon = document.querySelector("#eraser-toggle svg");
   const bounds = icon.getBoundingClientRect();

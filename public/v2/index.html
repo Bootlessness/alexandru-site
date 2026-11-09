@@ -15,12 +15,13 @@
   <script type="module" src="/drawing.js"></script>
   <script type="module" src="/crossword.js"></script>
 </head>
-<body>
+<body data-playground="off">
   <canvas id="falling-shapes" aria-hidden="true"></canvas>
+  <canvas id="shape-text-overlap" aria-hidden="true"></canvas>
   <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Close a loop to make it fall. Hold Command while dragging to erase."></canvas>
   <div id="drawing-cursor" aria-hidden="true"></div>
 
-  <main class="page">
+  <main class="page crossword-page">
     <section class="introduction crossword" aria-labelledby="name">
       <h1 id="name" class="crossword-name">
         <button type="button" class="name-toggle" aria-label="Alexandru Oprea" aria-controls="crossword-menu" aria-expanded="false">
@@ -32,19 +33,54 @@
         <button class="crossword-word" data-word="about" aria-label="About" style="--above:0" type="button" data-panel="about">
           <span aria-hidden="true"><span class="crossword-gap"></span><span>b</span><span>o</span><span>u</span><span>t</span></span>
         </button>
-        <a class="crossword-word" data-word="writing" aria-label="Writing" style="--above:5" href="https://medium.com/@alex.oprea.ao" target="_blank" rel="noopener">
+        <button type="button" data-panel="writing" class="crossword-word" data-word="writing" aria-label="Writing" style="--above:5">
           <span aria-hidden="true"><span>w</span><span>r</span><span>i</span><span>t</span><span>i</span><span class="crossword-gap"></span><span>g</span></span>
-        </a>
-        <a class="crossword-word" data-word="projects" aria-label="Projects" style="--above:2" href="https://www.designwithalexandru.com/" target="_blank" rel="noopener">
+        </button>
+        <button type="button" data-panel="works" class="crossword-word" data-word="projects" aria-label="Projects" style="--above:2">
           <span aria-hidden="true"><span>p</span><span>r</span><span class="crossword-gap"></span><span>j</span><span>e</span><span>c</span><span>t</span><span>s</span></span>
-        </a>
+        </button>
         <button class="crossword-word" data-word="hobbies" aria-label="Hobbies" style="--above:5" type="button" data-panel="hobbies">
           <span aria-hidden="true"><span>h</span><span>o</span><span>b</span><span>b</span><span>i</span><span class="crossword-gap"></span><span>s</span></span>
         </button>
       </nav>
     </section>
+    <p class="introduction-copy crossword-message">
+      <span class="message-role">Product designer</span>, currently completing an
+      <span class="message-study">MSc in Product Management &amp; UX Design</span>, designing
+      <span class="message-fintech">fintech</span> products that earn
+      <span class="message-trust">trust</span> through clarity and restraint.
+    </p>
   </main>
 
+  <nav class="crossword-dock" aria-label="Quick navigation">
+    <button type="button" class="dock-grip" aria-label="Move dock with arrow keys" title="Drag to move the dock">⠿</button>
+    <button type="button" id="dock-home" aria-current="page" aria-label="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-7 9 7v10H3z M9 20v-6h6v6"/></svg>
+    </button>
+    <button type="button" data-panel="about" aria-label="About">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/></svg>
+    </button>
+    <button type="button" data-panel="works" aria-label="Works">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v13H3z M8 7V4h8v3 M3 12h18 M10 12v2h4v-2"/></svg>
+    </button>
+    <button type="button" data-panel="writing" aria-label="Writing">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 12-12-3-3L5 16z M14 7l3 3"/></svg>
+    </button>
+    <button type="button" id="dock-playground" aria-pressed="false" aria-controls="drawing-canvas" aria-label="Playground">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4l5 8H1z M15 3h6v6h-6z M19 15a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+    </button>
+  </nav>
+
+  <dialog class="crossword-panel" id="works" aria-labelledby="works-title">
+    <h2 id="works-title">Works</h2>
+    <p>A selection of my product design projects will appear here.</p>
+    <form method="dialog"><button type="submit">Back to the board</button></form>
+  </dialog>
+  <dialog class="crossword-panel" id="writing" aria-labelledby="writing-title">
+    <h2 id="writing-title">Writing</h2>
+    <p>My writing on product design will appear here.</p>
+    <form method="dialog"><button type="submit">Back to the board</button></form>
+  </dialog>
   <dialog class="crossword-panel" id="about" aria-labelledby="about-title">
     <h2 id="about-title">About</h2>
     <p>I design products that earn trust through clarity and restraint.</p>
@@ -56,6 +92,24 @@
     <form method="dialog"><button type="submit">Back to the sketchpad</button></form>
   </dialog>
 
+  <details class="crossword-settings">
+    <summary>Settings</summary>
+    <label for="menu-size">
+    Menu size
+    <input id="menu-size" type="range" min="20" max="100" value="23" aria-controls="crossword-menu">
+    <output for="menu-size">23%</output>
+    </label>
+    <label>Default brightness <input type="range" min="55" max="115" value="115" data-setting="ink"> <output>115%</output></label>
+    <label>Hover brightness <input type="range" min="0" max="60" value="0" data-setting="highlight"> <output>0%</output></label>
+    <label>Color depth <input type="range" min="0" max="45" value="0" data-setting="depth"> <output>0%</output></label>
+    <label>Paper grain <input type="range" min="0" max="100" value="55" data-setting="paper-grain"> <output>55%</output></label>
+    <label>Type grain <input type="range" min="0" max="100" value="0" data-setting="type-grain"> <output>0%</output></label>
+    <label>Chalk grain <input id="chalk-grain" type="range" min="0" max="100" value="27"> <output for="chalk-grain">27%</output></label>
+    <canvas id="chalk-sample" width="225" height="25" aria-label="Chalk stroke preview"></canvas>
+    <label>Outline duration <input type="range" min="60" max="700" step="10" value="180" data-setting="outline-duration"> <output>180 ms</output></label>
+    <label>Ease in and out <input type="range" min="0" max="80" value="65" data-setting="ease"> <output>65%</output></label>
+    <label>Animation speed <input type="range" min="200" max="1000" step="20" value="560" data-setting="duration"> <output>560 ms</output></label>
+  </details>
   <div class="drawing-tools" role="group" aria-label="Drawing tools" hidden>
     <button id="eraser-toggle" type="button" aria-pressed="false" aria-controls="drawing-canvas">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

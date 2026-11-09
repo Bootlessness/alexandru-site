@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Alexandru Oprea — product design, clarity, and a little room to draw.">
+  <meta name="theme-color" content="#191b1e">
+  <title>Alexandru Oprea — A little room to draw</title>
+  <link rel="preload" href="/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/dm-sans.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/crossword.css">
+  <script src="/vendor/gsap.min.js" defer></script>
+  <script src="/vendor/Physics2DPlugin.min.js" defer></script>
+  <script type="module" src="/drawing.js"></script>
+  <script type="module" src="/crossword.js"></script>
+</head>
+<body>
+  <canvas id="falling-shapes" aria-hidden="true"></canvas>
+  <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Close a loop to make it fall. Hold Command while dragging to erase."></canvas>
+  <div id="drawing-cursor" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="introduction crossword" aria-labelledby="name">
+      <h1 id="name" class="crossword-name">
+        <button type="button" class="name-toggle" aria-label="Alexandru Oprea" aria-controls="crossword-menu" aria-expanded="false">
+          <span class="name-glyph" aria-hidden="true" style="--hue:#da7584">A</span><span class="name-rest"><span><span class="name-glyph" aria-hidden="true" style="--hue:#dd8580">l</span><span class="name-glyph" aria-hidden="true" style="--hue:#df956e">e</span><span class="name-glyph" aria-hidden="true" style="--hue:#e0a45f">x</span><span class="name-glyph" aria-hidden="true" data-joint="about" style="--hue:#d4ad67">a</span><span class="name-glyph" aria-hidden="true" data-joint="writing" style="--hue:#b5b576">n</span><span class="name-glyph" aria-hidden="true" style="--hue:#96b77e">d</span><span class="name-glyph" aria-hidden="true" style="--hue:#7fb482">r</span><span class="name-glyph" aria-hidden="true" style="--hue:#79b393">u</span><span>&nbsp;</span></span></span>
+          <span class="name-glyph" aria-hidden="true" data-joint="projects" style="--hue:#6aa9cc">O</span><span class="name-rest"><span><span class="name-glyph" aria-hidden="true" style="--hue:#7c9ed0">p</span><span class="name-glyph" aria-hidden="true" style="--hue:#9093d0">r</span><span class="name-glyph" aria-hidden="true" data-joint="hobbies" style="--hue:#a586cf">e</span><span class="name-glyph" aria-hidden="true" style="--hue:#b784cf">a</span></span></span>
+        </button>
+      </h1>
+      <nav class="crossword-menu" id="crossword-menu" aria-label="Site menu" inert>
+        <button class="crossword-word" data-word="about" aria-label="About" style="--above:0" type="button" data-panel="about">
+          <span aria-hidden="true"><span class="crossword-gap"></span><span>b</span><span>o</span><span>u</span><span>t</span></span>
+        </button>
+        <a class="crossword-word" data-word="writing" aria-label="Writing" style="--above:5" href="https://medium.com/@alex.oprea.ao" target="_blank" rel="noopener">
+          <span aria-hidden="true"><span>w</span><span>r</span><span>i</span><span>t</span><span>i</span><span class="crossword-gap"></span><span>g</span></span>
+        </a>
+        <a class="crossword-word" data-word="projects" aria-label="Projects" style="--above:2" href="https://www.designwithalexandru.com/" target="_blank" rel="noopener">
+          <span aria-hidden="true"><span>p</span><span>r</span><span class="crossword-gap"></span><span>j</span><span>e</span><span>c</span><span>t</span><span>s</span></span>
+        </a>
+        <button class="crossword-word" data-word="hobbies" aria-label="Hobbies" style="--above:5" type="button" data-panel="hobbies">
+          <span aria-hidden="true"><span>h</span><span>o</span><span>b</span><span>b</span><span>i</span><span class="crossword-gap"></span><span>s</span></span>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <dialog class="crossword-panel" id="about" aria-labelledby="about-title">
+    <h2 id="about-title">About</h2>
+    <p>I design products that earn trust through clarity and restraint.</p>
+    <form method="dialog"><button type="submit">Back to the sketchpad</button></form>
+  </dialog>
+  <dialog class="crossword-panel" id="hobbies" aria-labelledby="hobbies-title">
+    <h2 id="hobbies-title">Hobbies</h2>
+    <p>A little room to draw. Close a loop, then grab or throw the shape.</p>
+    <form method="dialog"><button type="submit">Back to the sketchpad</button></form>
+  </dialog>
+
+  <div class="drawing-tools" role="group" aria-label="Drawing tools" hidden>
+    <button id="eraser-toggle" type="button" aria-pressed="false" aria-controls="drawing-canvas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m14 3 7 7-10 10H7l-5-5L14 3Z"/><path d="m9 8 7 7M10 20h11"/>
+      </svg>
+      <span>Eraser</span>
+    </button>
+    <button id="clear-drawing" type="button" aria-controls="drawing-canvas">Clear</button>
+    <button id="copy-svg" type="button">Copy SVG</button>
+  </div>
+  <p class="drawing-hint" hidden>Close a loop, then grab or throw it <span aria-hidden="true">·</span> Hold <kbd>⌘</kbd> to erase</p>
+  <p class="screen-reader-only" id="drawing-status" role="status">Pencil selected.</p>
+</body>
+</html>
