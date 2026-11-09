@@ -131,6 +131,7 @@ function captureSvg() {
   for (const id of ["falling-shapes", "drawing-canvas"]) {
     const canvas = document.getElementById(id);
     const rect = canvas.getBoundingClientRect();
+    art.filter = getComputedStyle(canvas).filter;
     art.drawImage(canvas, rect.x, rect.y, rect.width, rect.height);
   }
 

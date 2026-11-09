@@ -400,3 +400,34 @@ if (settings) {
     settings.hidden = !settings.hidden;
   });
 }
+
+const themeToggle = document.querySelector(".theme-toggle");
+if (themeToggle) {
+  const root = document.documentElement;
+  const elements = [
+    [document.querySelector(".crossword-name"), "Name", true],
+    [document.querySelector(".crossword-message"), "Description", true],
+    [dock, "Dock", false],
+  ];
+
+  function measureBlueprint() {
+    if (root.dataset.theme !== "light") return;
+    for (const [element, label, showFont] of elements) {
+      const bounds = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      const font = showFont ? " · " + style.fontFamily.split(",")[0].replaceAll('"', "") + " " + style.fontSize : "";
+      element.dataset.measurement = label + " · " + Math.round(bounds.width) + " × " + Math.round(bounds.height) + " px" + font;
+    }
+  }
+
+  const blueprintObserver = new ResizeObserver(measureBlueprint);
+  for (const [element] of elements) blueprintObserver.observe(element);
+
+  themeToggle.addEventListener("click", () => {
+    const light = root.dataset.theme !== "light";
+    root.dataset.theme = light ? "light" : "dark";
+    themeToggle.setAttribute("aria-pressed", String(light));
+    document.querySelector('meta[name="theme-color"]').content = light ? "#f5f3ee" : "#191b1e";
+    measureBlueprint();
+  });
+}
