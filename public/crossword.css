@@ -300,10 +300,6 @@ body:has(.crossword-page) .drawing-hint {
   }
 }
 
-.crossword-page .crossword-message {
-  bottom: max(92px, calc(env(safe-area-inset-bottom) + 84px));
-}
-
 .crossword-dock {
   position: fixed;
   z-index: 6;
@@ -407,4 +403,20 @@ body[data-playground="on"] .drawing-hint {
   top: 50%;
   bottom: auto;
   transform: translateY(-50%);
+}
+
+.crossword-page .crossword-message {
+  top: calc(50% + clamp(22px, min(6.7vw, 9.5svh), 66px) + 40px);
+  bottom: auto;
+}
+
+.crossword-page:has(.crossword[data-open]) .crossword-message {
+  top: calc(100% - max(92px, calc(env(safe-area-inset-bottom) + 84px)));
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .crossword-page .crossword-message {
+    transition: top var(--name-expand), transform var(--name-expand);
+  }
 }

@@ -108,6 +108,17 @@ export function createFallingShapes(pencil, pencilContext, announce) {
     const titleObserver = new ResizeObserver(queueOverlap);
     titleObserver.observe(document.querySelector(".name-toggle"));
     document.body.addEventListener("playgroundchange", queueOverlap);
+    const message = document.querySelector(".crossword-message");
+    message?.addEventListener("transitionrun", (event) => {
+      if (event.propertyName !== "top") return;
+      function followMessage() {
+        queueOverlap();
+        if (message.getAnimations().some((animation) => animation.playState === "running")) {
+          requestAnimationFrame(followMessage);
+        }
+      }
+      requestAnimationFrame(followMessage);
+    });
     const visibilityObserver = new MutationObserver(queueOverlap);
     visibilityObserver.observe(document.querySelector(".drawing-hint"), { attributeFilter: ["hidden"] });
     visibilityObserver.observe(document.querySelector(".crossword"), { attributeFilter: ["data-open"] });
