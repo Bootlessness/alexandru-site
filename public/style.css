@@ -1,6 +1,5 @@
-/* taste-skill-ignore: this is the self-hosted display face; system fonts below are fallbacks. */
 @font-face {
-  font-family: "Instrument Serif";
+  font-family: "Instrument Serif"; /* taste-skill-ignore: the sketchpad’s chosen display face. */
   src: url("/fonts/instrument-serif.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
@@ -19,9 +18,21 @@
   --paper: #f5f3ee;
   --ink: #302f2b;
   --muted: #77746d;
+  --pencil: #514b42;
+  --eraser-ring: #77746db3;
   --eraser-size: 50.93px;
   --font-display: "Instrument Serif", "Baskerville", Georgia, serif;
   --font-text: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #191b1e;
+  --ink: #ece9e1;
+  --muted: #aaaeb4;
+  --pencil: #d8d5cd;
+  --eraser-ring: #d8d5cdb3;
+  --grid-line: #ffffff0b;
 }
 
 * { box-sizing: border-box; }
@@ -39,6 +50,14 @@ body {
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px), /* taste-skill-ignore: requested graph-paper grid. */
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px); /* taste-skill-ignore: requested graph-paper grid. */
+  background-size: 32px 32px;
+  background-position: center;
 }
 
 #drawing-canvas, #falling-shapes {
@@ -174,7 +193,7 @@ kbd { font: inherit; }
 body[data-drawing-mode="eraser"] #drawing-cursor {
   width: var(--eraser-size);
   height: var(--eraser-size);
-  border: 1px solid #77746db3; /* taste-skill-ignore: the user-requested eraser cursor shows the actual brush size. */
+  border: 1px solid var(--eraser-ring); /* taste-skill-ignore: the user-requested eraser cursor shows the actual brush size. */
   background: transparent;
 }
 

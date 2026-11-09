@@ -17,6 +17,7 @@ import { createFallingShapes, eraseSegment } from "./shapes.js";
   });
   const eraserDiameter = 160 / Math.PI;
   const finePointer = window.matchMedia("(pointer: fine)");
+  const pencilColor = getComputedStyle(document.documentElement).getPropertyValue("--pencil").trim();
   let pixelRatio = 1;
   let width = 0;
   let height = 0;
@@ -81,14 +82,14 @@ import { createFallingShapes, eraseSegment } from "./shapes.js";
     return { x: (point.x - first.x) / seconds, y: (point.y - first.y) / seconds };
   }
 
-  // Individual graphite flecks build up darker where a stroke passes repeatedly.
+  // Individual pencil flecks build up where a stroke passes repeatedly.
   function pencilSegment(from, to) {
     const distance = Math.hypot(to.x - from.x, to.y - from.y);
     const steps = Math.max(1, Math.ceil(distance / 0.55));
     context.save();
     context.globalCompositeOperation = "source-over";
-    context.strokeStyle = "#514b42";
-    context.fillStyle = "#514b42";
+    context.strokeStyle = pencilColor;
+    context.fillStyle = pencilColor;
     context.lineWidth = 0.7;
     context.lineCap = "round";
     context.globalAlpha = 0.055;
