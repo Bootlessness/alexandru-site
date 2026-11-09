@@ -1,0 +1,205 @@
+/* taste-skill-ignore: this is the self-hosted display face; system fonts below are fallbacks. */
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("/fonts/instrument-serif.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f5f3ee;
+  --ink: #302f2b;
+  --muted: #77746d;
+  --eraser-size: 50.93px;
+  --font-display: "Instrument Serif", "Baskerville", Georgia, serif;
+  --font-text: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  color: var(--ink);
+  background: var(--paper);
+  font: 400 17px / 1.5 var(--font-text);
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+#drawing-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 100px 24px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.introduction {
+  width: min(100%, 780px);
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font: 400 clamp(58px, 7.3vw, 106px) / 1.05 var(--font-display);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.introduction-copy {
+  max-width: 440px;
+  margin: 27px auto 0;
+  font-size: clamp(16px, 1.45vw, 19px);
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+
+.portfolio-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  margin-top: 25px;
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  pointer-events: auto;
+}
+
+.portfolio-link span { transition: transform 160ms ease-out; }
+.portfolio-link:hover span { transform: translate(2px, -2px); }
+
+.drawing-tools {
+  position: fixed;
+  z-index: 4;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+[hidden] { display: none !important; }
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font: 400 13px / 1.4 var(--font-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:hover, button[aria-pressed="true"] { color: var(--ink); }
+button:active { transform: translateY(1px); }
+
+.drawing-hint {
+  position: fixed;
+  z-index: 3;
+  bottom: max(26px, env(safe-area-inset-bottom));
+  left: 24px;
+  right: 24px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.drawing-hint span { margin: 0 8px; }
+kbd { font: inherit; }
+
+:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 6px;
+}
+
+#drawing-cursor {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body[data-drawing-mode="eraser"] #drawing-cursor {
+  width: var(--eraser-size);
+  height: var(--eraser-size);
+  border: 1px solid #77746db3; /* taste-skill-ignore: the user-requested eraser cursor shows the actual brush size. */
+  background: transparent;
+}
+
+.screen-reader-only {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 1px;
+  height: 1px; /* taste-skill-ignore: visually hidden accessible status, not a decorative rule. */
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (pointer: fine) {
+  body.drawing-ready #drawing-canvas { cursor: none; }
+}
+
+@media (max-width: 480px) {
+  h1 { max-width: 310px; margin-inline: auto; font-size: 66px; }
+  .introduction-copy { max-width: 300px; margin-top: 24px; }
+  .desktop-break { display: none; }
+  .drawing-tools { top: max(12px, env(safe-area-inset-top)); right: 20px; }
+  .drawing-hint { bottom: max(22px, env(safe-area-inset-bottom)); font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-link span { transition: none; }
+  .portfolio-link:hover span { transform: none; }
+}

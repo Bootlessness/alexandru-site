@@ -3,44 +3,38 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alexandru Oprea</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 48px 24px;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      font-size: 18px;
-      line-height: 1.5;
-      color: #1a1a1a;
-      background: #ffffff;
-    }
-    main {
-      max-width: 36rem;
-      margin: 0 auto;
-    }
-    h1 {
-      font-size: 2.25rem;
-      line-height: 1.15;
-      margin: 0 0 16px;
-    }
-    p {
-      margin: 0 0 16px;
-    }
-    a {
-      color: inherit;
-    }
-    .note {
-      color: #666666;
-      font-size: 16px;
-    }
-  </style>
+  <meta name="description" content="Alexandru Oprea — product design, clarity, and a little room to draw.">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>Alexandru Oprea — A little room to draw</title>
+  <link rel="preload" href="/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/dm-sans.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/drawing.js" defer></script>
 </head>
 <body>
-  <main>
-    <h1>Alexandru Oprea</h1>
-    <p>One sentence about who you are and what you care about.</p>
-    <p><a href="https://www.designwithalexandru.com/">View my portfolio</a></p>
-    <p class="note">This page is the start of my site. It will change a lot.</p>
+  <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Drag to draw; hold Command while dragging to erase."></canvas>
+  <div id="drawing-cursor" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="introduction" aria-labelledby="name">
+      <h1 id="name">Alexandru Oprea</h1>
+      <p class="introduction-copy">I design products that earn trust<br class="desktop-break"> through clarity and restraint.</p>
+      <a class="portfolio-link" href="https://www.designwithalexandru.com/" target="_blank" rel="noopener">
+        View my portfolio <span aria-hidden="true">↗</span>
+      </a>
+    </section>
   </main>
+
+  <div class="drawing-tools" role="group" aria-label="Drawing tools" hidden>
+    <button id="eraser-toggle" type="button" aria-pressed="false" aria-controls="drawing-canvas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m14 3 7 7-10 10H7l-5-5L14 3Z"/><path d="m9 8 7 7M10 20h11"/>
+      </svg>
+      <span>Eraser</span>
+    </button>
+    <button id="clear-drawing" type="button" aria-controls="drawing-canvas">Clear</button>
+  </div>
+  <p class="drawing-hint" hidden>Drag to draw <span aria-hidden="true">·</span> Hold <kbd>⌘</kbd> to erase</p>
+  <p class="screen-reader-only" id="drawing-status" role="status">Pencil selected.</p>
 </body>
 </html>
