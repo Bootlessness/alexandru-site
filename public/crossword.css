@@ -1,0 +1,116 @@
+.crossword {
+  --name-size: clamp(44px, min(13.4vw, 19svh), 132px);
+  --row: clamp(19px, min(3.5vw, 5.3svh), 32px);
+  --about: #e0a45f;
+  --writing: #b5b576;
+  --projects: #6aa9cc;
+  --hobbies: #a586cf;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+}
+
+.crossword-name {
+  font-size: var(--name-size);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  filter: drop-shadow(0 0 18px #e9d7ba2a); /* taste-skill-ignore: keeps the sketchpad's title glow. */
+}
+
+.name-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  min-height: 0;
+  padding: 0;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.name-toggle:active { transform: none; }
+
+.name-rest {
+  display: grid;
+  grid-template-columns: 0fr;
+  opacity: 0;
+  transition: grid-template-columns 340ms cubic-bezier(.2,.75,.2,1), opacity 200ms ease;
+}
+
+.name-rest > span { min-width: 0; overflow: clip; }
+.crossword[data-open] .name-rest { grid-template-columns: 1fr; opacity: 1; }
+
+.name-glyph {
+  --name-ink: var(--ink);
+  display: inline-block;
+  color: transparent;
+  background-image: radial-gradient(circle 80px at var(--local-x, -100px) var(--local-y, -100px), var(--hue) 24px, transparent 80px), linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: localized rainbow on the name. */
+  background-clip: text; /* taste-skill-ignore: clips the existing hover effect to the letters. */
+}
+
+.crossword[data-active="about"] [data-joint="about"],
+.crossword[data-active="writing"] [data-joint="writing"],
+.crossword[data-active="projects"] [data-joint="projects"],
+.crossword[data-active="hobbies"] [data-joint="hobbies"] {
+  --name-ink: var(--active-ink);
+  background-image: linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: solid ink on the shared letter. */
+}
+
+.crossword-menu {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.crossword[data-open] .crossword-menu {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 150ms;
+}
+
+.crossword-word {
+  position: absolute;
+  top: calc(0px - var(--above) * var(--row));
+  left: var(--anchor, 0px);
+  display: block;
+  width: clamp(20px, 5.3vw, 46px);
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  transform: translateX(-50%);
+  color: var(--ink);
+  font: 400 calc(var(--row) * .96) / var(--row) var(--font-display);
+  text-align: center;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.crossword-word:active { transform: translateX(-50%); }
+.crossword-word > span > span { display: block; }
+.crossword-gap { height: var(--name-size); }
+.crossword-word:is(:hover, :focus-visible) { color: var(--word-ink); }
+[data-word="about"] { --word-ink: var(--about); }
+[data-word="writing"] { --word-ink: var(--writing); }
+[data-word="projects"] { --word-ink: var(--projects); }
+[data-word="hobbies"] { --word-ink: var(--hobbies); }
+
+.crossword-panel {
+  width: min(400px, calc(100% - 40px));
+  padding: 24px 28px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.crossword-panel::backdrop { background: #111318a6; }
+.crossword-panel h2 { margin: 0; font: 400 44px / 1 var(--font-display); }
+.crossword-panel button { padding-inline: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .name-rest, .crossword-menu { transition: none; }
+}

@@ -64,9 +64,12 @@ function paintText(context, halo) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
-      if (parent.closest(".title-color")) continue;
+      if (parent.closest(".title-color, .crossword:not([data-open]) .name-rest")) continue;
       const style = getComputedStyle(parent);
-      context.fillStyle = style.color;
+      if (style.visibility !== "visible") continue;
+      context.fillStyle = parent.classList.contains("name-glyph")
+        ? style.getPropertyValue("--name-ink").trim()
+        : style.color;
       setFont(context, style);
       const glow = style.textShadow.match(/^(rgba?\([^)]+\)) 0px 0px ([\d.]+)px$/);
       if (glow) {

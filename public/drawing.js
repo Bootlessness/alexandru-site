@@ -15,7 +15,7 @@ import { paperTile } from "./paper-grain.js";
   const status = document.getElementById("drawing-status");
   const hint = document.querySelector(".drawing-hint");
   const titleColor = document.querySelector(".title-color");
-  if (titleColor) document.body.style.setProperty("--paper-grain", paperTile());
+  if (titleColor || document.querySelector(".crossword")) document.body.style.setProperty("--paper-grain", paperTile());
   const shapes = createFallingShapes(canvas, context, (count) => {
     status.textContent = count === 1 ? "A shape detached." : count + " shapes detached.";
   });
