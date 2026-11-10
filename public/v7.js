@@ -92,6 +92,11 @@ function setLanguage(language) {
     ro: "Apasă și trage pentru a explora",
   }[language];
   prepareWave(tutorialLabel);
+  document.querySelector(".board-tutorial-secondary").textContent = {
+    en: "or use menu at the bottom",
+    fr: "ou utilisez le menu en bas",
+    ro: "sau folosește meniul de jos",
+  }[language];
   const compass = document.querySelector(".board-compass");
   const compassLabels = [works, "Contact", about, writing];
   compass?.querySelectorAll("[data-compass-label]").forEach((element, index) => {
@@ -392,7 +397,6 @@ viewport.addEventListener("pointerdown", stopReturn);
 viewport.addEventListener("wheel", stopReturn, { passive: true });
 function layoutCompass() {
   const compass = world.querySelector(".board-compass");
-  const frame = compass.getBoundingClientRect();
   const title = destinations.get(home).getBoundingClientRect();
   const intro = description.closest(".introduction").getBoundingClientRect();
   const works = world.querySelector(".card-group--works").getBoundingClientRect();
@@ -400,6 +404,8 @@ function layoutCompass() {
   const writingGroup = world.querySelector(".card-group--writing");
   const homeBottom = centeredPosition(destinations.get(home)).y + viewport.clientHeight;
   writingGroup.style.setProperty("--writing-top", `${homeBottom + 32}px`);
+  if (!compass) return;
+  const frame = compass.getBoundingClientRect();
   const sideGap = Math.max(0, (title.left - works.right + about.left - title.right) / 4);
   const homeViewportBottom = world.getBoundingClientRect().top + homeBottom;
   const verticalGap = Math.max(14, Math.min(sideGap, homeViewportBottom - intro.bottom - 200));
@@ -427,7 +433,19 @@ const initialHome = centeredPosition(destinations.get(home));
 viewport.scrollTo(initialHome.x, initialHome.y);
 syncDestination();
 const tutorial = document.querySelector(".board-tutorial");
+let boardInteraction = false;
+viewport.addEventListener("pointermove", () => {
+  if (viewport.classList.contains("node-panning")) boardInteraction = true;
+});
+viewport.addEventListener("wheel", () => { boardInteraction = true; }, { passive: true });
+viewport.addEventListener("keydown", (event) => {
+  if (event.target === viewport) boardInteraction = true;
+});
+dock.addEventListener("click", (event) => {
+  if (event.target.closest("[data-destination]")) boardInteraction = true;
+});
 viewport.addEventListener("scroll", () => {
+  if (!boardInteraction) return;
   if (document.body.classList.contains("v7-intro") && !motionPreference.matches) return;
   const homePosition = centeredPosition(destinations.get(home));
   if (Math.hypot(viewport.scrollLeft - homePosition.x, viewport.scrollTop - homePosition.y) > 4) {

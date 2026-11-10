@@ -358,10 +358,10 @@
   top: max(60px, calc(env(safe-area-inset-top) + 52px));
   translate: -50% 0;
   margin: 0;
-  width: min(300px, calc(100vw - 32px));
+  width: min(360px, calc(100vw - 24px));
   padding: 12px 20px;
   color: #fff;
-  font: 14px/1.4 var(--font-text);
+  font: 16px/1.4 var(--font-text);
   text-align: center;
   pointer-events: none;
 }
@@ -376,11 +376,14 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.v7-intro .board-tutorial { visibility: hidden; }
-@media (prefers-reduced-motion: reduce) {
-  .v7-intro .board-tutorial { visibility: visible; }
+.board-tutorial-secondary {
+  display: block;
+  margin-top: 4px;
+  color: #b9bbc0;
+  font-size: 14px;
 }
 @media (prefers-reduced-motion: no-preference) {
+  .v7-intro .board-tutorial { animation: board-dot-in 240ms 400ms backwards; }
   .board-tutorial:not([hidden]) :is(svg, .phrase-wave-word > span) {
     animation: tutorial-wave 2.8s ease-in-out var(--wave-delay, 0ms) infinite;
   }
