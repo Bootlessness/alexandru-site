@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Kristi";
+  src: url("/fonts/kristi.ttf") format("truetype");
+  font-display: swap;
+}
+
 .v6-page .page { min-height: 0; padding-block: 90px 28px; }
 .v6-page .drawing-hint { display: none; }
 .node-board {
@@ -225,6 +231,11 @@
 }
 
 .v7-page #name {
+  font-family: "Kristi", var(--font-display);
+  width: min(100%, 440px);
+  margin-inline: auto;
+  font-size: 102px;
+  letter-spacing: normal;
   text-shadow: 0 0 12px #f5debc72, 0 0 36px #e9d7ba65;
 }
 
