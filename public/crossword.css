@@ -366,9 +366,9 @@ body:has(.crossword-page) .drawing-hint {
 
 .crossword-dock .dock-grip:active { cursor: var(--dot-cursor, grabbing); }
 
-.crossword-dock > button:not(.dock-grip) { position: relative; }
+.crossword-dock > :is(button:not(.dock-grip), .dock-cv) { position: relative; }
 
-.crossword-dock > button:not(.dock-grip):is(:hover, :focus-visible)::after {
+.crossword-dock > :is(button:not(.dock-grip), .dock-cv):is(:hover, :focus-visible)::after {
   content: attr(aria-label);
   position: absolute;
   bottom: calc(100% + 12px);

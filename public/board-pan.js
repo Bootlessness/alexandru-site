@@ -53,7 +53,7 @@ if (smooth) {
   reducedMotion.addEventListener("change", stopBoardPan);
 }
 viewport.addEventListener("pointerdown", (event) => {
-  if (pan || event.button !== 0 || event.target.closest("button, a, .node-card")) return;
+  if (pan || event.button !== 0 || event.target.closest("button, a, input, textarea, label, .node-card, .showcase-card:has(.card-detail-trigger)")) return;
   stopBoardPan();
   pan = { id: event.pointerId, x: event.clientX + viewport.scrollLeft, y: event.clientY + viewport.scrollTop };
   viewport.setPointerCapture(pan.id);

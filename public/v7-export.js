@@ -78,9 +78,12 @@ function capture() {
   const worldStyle = getComputedStyle(world);
   const step = parseFloat(worldStyle.backgroundSize);
   const grid = [];
-  const start = (origin, size) => ((origin + (size - step) / 2) % step + step) % step + .5;
-  for (let x = start(worldRect.left, worldRect.width); x < width; x += step) grid.push(`M${x} 0V${height}`);
-  for (let y = start(worldRect.top, worldRect.height); y < height; y += step) grid.push(`M0 ${y}H${width}`);
+  const start = (origin, size) => ((origin + (size - step) / 2) % step + step) % step;
+  for (let y = start(worldRect.top, worldRect.height); y < height; y += step) {
+    for (let x = start(worldRect.left, worldRect.width); x < width; x += step) {
+      grid.push(`M${x} ${y}h.01`);
+    }
+  }
 
   const dock = document.querySelector(".crossword-dock");
   const items = [...dock.querySelectorAll("button, a")].map((button) => {
@@ -96,7 +99,7 @@ function capture() {
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
     `<rect id="Background" width="${width}" height="${height}" fill="${getComputedStyle(document.body).backgroundColor}"/>`,
-    `<path id="Grid" d="${grid.join(" ")}" fill="none" stroke="${worldStyle.getPropertyValue("--grid-line").trim()}"/>`,
+    `<path id="Grid" d="${grid.join(" ")}" fill="none" stroke="${worldStyle.getPropertyValue("--grid-dot").trim()}" stroke-width="2" stroke-linecap="round"/>`,
     `<g id="Title">${textLayers(document.getElementById("name"))}</g>`,
     `<g id="Description">${textLayers(document.querySelector(".introduction-copy"))}</g>`,
     `<g id="Bottom-Menu">${rectangle(dock)}${items.join("")}</g>`,

@@ -1,0 +1,583 @@
+.crossword {
+  --name-size: calc(clamp(44px, min(13.4vw, 19svh), 132px) * var(--name-scale, 1));
+  --default-row: clamp(19px, min(3.5vw, 5.3svh), 32px);
+  --menu-size: calc(var(--default-row) * .96);
+  --row: calc(var(--menu-size) / .96);
+  --about: #e0a45f;
+  --writing: #b5b576;
+  --projects: #6aa9cc;
+  --hobbies: #a586cf;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+}
+
+.crossword-page {
+  --name-expand: var(--duration, 560ms) cubic-bezier(var(--ease-in, .65),0,var(--ease-out, .35),1);
+  --menu-reveal-delay: 240ms;
+  min-height: calc(100svh + var(--extra-top, 0px) + var(--extra-bottom, 0px));
+  padding-block: calc(100px + var(--extra-top, 0px)) calc(100px + var(--extra-bottom, 0px));
+  overflow-anchor: none;
+}
+
+.crossword-settings {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  left: max(24px, env(safe-area-inset-left));
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.crossword-settings input {
+  width: 78px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.crossword-settings output {
+  min-width: 4ch;
+  font-variant-numeric: tabular-nums;
+}
+
+.crossword-name {
+  font-family: var(--font-display);
+  font-weight: var(--name-weight, 400);
+  font-size: var(--name-size);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  filter: drop-shadow(0 0 18px #e9d7ba2a); /* taste-skill-ignore: keeps the sketchpad's title glow. */
+}
+
+.name-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  min-height: 0;
+  padding: 0;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.name-toggle:active { transform: none; }
+
+.name-rest {
+  display: grid;
+  grid-template-columns: 0fr;
+  opacity: 0;
+  transition: grid-template-columns var(--name-expand, 340ms cubic-bezier(.2,.75,.2,1)), opacity var(--name-fade, 200ms ease);
+}
+
+.name-rest > span { min-width: 0; overflow: clip; }
+.crossword[data-open] .name-rest { grid-template-columns: 1fr; opacity: 1; }
+
+.name-glyph {
+  --name-ink: var(--ink);
+  display: inline-block;
+  color: transparent;
+  background-image: radial-gradient(circle 160px at var(--local-x, -200px) var(--local-y, -200px), var(--hue) 48px, transparent 160px), linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: localized rainbow on the name. */
+  background-clip: text; /* taste-skill-ignore: clips the existing hover effect to the letters. */
+}
+
+.crossword[data-active="about"] [data-joint="about"],
+.crossword[data-active="writing"] [data-joint="writing"],
+.crossword[data-active="projects"] [data-joint="projects"],
+.crossword[data-active="hobbies"] [data-joint="hobbies"] {
+  --name-ink: var(--active-ink);
+  background-image: linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: solid ink on the shared letter. */
+}
+
+.crossword-page .crossword[data-active] .name-glyph {
+  background-image: linear-gradient(var(--name-ink), var(--name-ink)); /* taste-skill-ignore: suspend the rainbow while a branch is selected. */
+}
+
+.crossword-menu {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  overflow: clip;
+  transition: opacity 180ms ease;
+}
+
+.crossword[data-open] .crossword-menu {
+  visibility: visible;
+  opacity: 1;
+  overflow: visible;
+  transition-delay: var(--menu-reveal-delay, 150ms);
+}
+
+.crossword-word {
+  position: absolute;
+  top: calc(var(--joint-top, 0px) - var(--above) * var(--row));
+  left: var(--anchor, 0px);
+  display: block;
+  width: clamp(20px, 5.3vw, 46px);
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  transform: translateX(-50%);
+  color: var(--ink);
+  font: var(--name-weight, 400) var(--menu-size) / var(--row) var(--font-display);
+  text-align: center;
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.crossword-word:active { transform: translateX(-50%); }
+.crossword-word > span > span { display: block; }
+.crossword-gap { height: var(--joint-height, var(--name-size)); }
+.crossword-word:is(:hover, :focus-visible) { color: var(--word-ink); }
+.crossword-page .crossword-word {
+  --word-highlight: color-mix(in srgb, color-mix(in srgb, var(--word-ink), white var(--highlight, 0%)), black var(--depth, 0%));
+  color: var(--word-color, var(--ink));
+}
+
+.crossword-page [data-active="about"] [data-word="about"],
+.crossword-page [data-active="writing"] [data-word="writing"],
+.crossword-page [data-active="projects"] [data-word="projects"],
+.crossword-page [data-active="hobbies"] [data-word="hobbies"] {
+  --word-color: var(--active-ink);
+}
+
+[data-word="about"] { --word-ink: var(--about); }
+[data-word="writing"] { --word-ink: var(--writing); }
+[data-word="projects"] { --word-ink: var(--projects); }
+[data-word="hobbies"] { --word-ink: var(--hobbies); }
+
+.crossword-panel {
+  width: min(400px, calc(100% - 40px));
+  padding: 24px 28px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.crossword-panel::backdrop { background: #111318a6; }
+.crossword-panel h2 { margin: 0; font: var(--name-weight, 400) 44px / 1 var(--font-display); }
+.crossword-panel button { padding-inline: 0; }
+
+@media (max-width: 520px) {
+  .crossword-settings {
+    top: max(56px, calc(env(safe-area-inset-top) + 44px));
+    right: max(20px, env(safe-area-inset-right));
+    left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-rest, .crossword-menu { transition: none; }
+}
+
+.crossword-page {
+  --ink: hsl(44 22% var(--ink-lightness, 100%));
+}
+
+.crossword-settings {
+  display: block;
+  padding: 12px;
+  background: var(--paper);
+}
+
+.crossword-settings summary { cursor: var(--dot-cursor, pointer); }
+.crossword-settings label {
+  display: grid;
+  grid-template-columns: 116px 78px 5ch;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+
+.crossword-outline {
+  position: absolute;
+  inset: -7px -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 14px);
+  color: inherit;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.crossword-word[data-highlighted] .crossword-outline { visibility: visible; }
+
+[data-theme] body:has(.crossword-page) {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px), /* taste-skill-ignore: graph-paper grid. */
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px); /* taste-skill-ignore: graph-paper grid. */
+  background-size: 32px 32px;
+  background-position: center;
+}
+
+body:has(.crossword-page)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.83' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: calc(var(--paper-grain-opacity, .55) * .24);
+  mix-blend-mode: soft-light;
+}
+
+.crossword-page .name-glyph,
+.crossword-page .crossword-word > span,
+body:has(.crossword-page) :is(.drawing-tools button, .drawing-hint, .crossword-settings summary) {
+  filter: var(--type-grain, none);
+}
+
+.crossword-settings[open] {
+  max-height: calc(100svh - 100px);
+  overflow: auto;
+}
+
+.crossword-message {
+  position: fixed;
+  bottom: max(62px, calc(env(safe-area-inset-bottom) + 52px));
+  left: 24px;
+  right: 24px;
+  margin: 0 auto;
+  max-width: 650px;
+  text-align: center;
+  text-wrap: balance;
+  font-size: clamp(14px, 2vw, 18px);
+  filter: var(--type-grain, none);
+}
+
+#shape-text-overlap {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.crossword-page .name-rest {
+  opacity: 1;
+  transition: grid-template-columns var(--name-expand);
+}
+
+.crossword-page .crossword:not([data-open]) .name-rest .name-glyph {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .crossword-page .crossword[data-open] .name-rest .name-glyph {
+    animation: name-letter-reveal 1ms step-end both;
+    animation-delay: calc(var(--duration, 560ms) * (.4 + var(--letter-order) * .046));
+  }
+}
+
+@keyframes name-letter-reveal {
+  from { visibility: hidden; }
+  to { visibility: visible; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crossword-page .name-rest { transition: none; }
+}
+
+.crossword-page .crossword { --menu-size: calc(var(--name-size) * .23); }
+.crossword-word svg.crossword-outline { opacity: 0; }
+
+.message-role { color: #b784cf; }
+.message-study { color: #96b77e; }
+.message-fintech { color: #d9a781; }
+.message-trust { color: #6aa9cc; }
+
+body:has(.crossword-page) .drawing-hint {
+  top: max(70px, calc(env(safe-area-inset-top) + 64px));
+  bottom: auto;
+}
+
+@media (max-width: 520px) {
+  body:has(.crossword-page) .drawing-hint {
+    top: max(105px, calc(env(safe-area-inset-top) + 100px));
+  }
+}
+
+.crossword-dock {
+  position: fixed;
+  z-index: 6;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(32px) saturate(125%);
+  -webkit-backdrop-filter: blur(32px) saturate(125%);
+  box-shadow: 0 6px 24px #0005; /* taste-skill-ignore: floating dock. */
+}
+
+.crossword-dock > :is(a, button) {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 11px;
+  color: var(--muted);
+}
+
+.crossword-dock > :is(:hover, :focus-visible, [aria-current]) {
+  color: var(--ink);
+  background: #ffffff13;
+}
+
+.crossword-dock svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.crossword-dock #dock-home { --dock-ink: #da7584; }
+.crossword-dock [data-panel="about"] { --dock-ink: #e0a45f; }
+.crossword-dock [data-panel="works"] { --dock-ink: #6aa9cc; }
+.crossword-dock [data-panel="writing"] { --dock-ink: #b5b576; }
+.crossword-dock #dock-playground { --dock-ink: #a586cf; }
+
+.crossword-dock > :is(:hover, :focus-visible, :active, [aria-expanded="true"], [aria-pressed="true"], [aria-current="page"]) {
+  color: var(--dock-ink, var(--ink));
+  background: color-mix(in srgb, var(--dock-ink, var(--ink)) 20%, transparent);
+}
+
+.crossword-dock .dock-grip {
+  width: 24px;
+  min-width: 24px;
+  cursor: var(--dot-cursor, grab);
+  touch-action: none;
+  user-select: none;
+}
+
+.crossword-dock .dock-grip:active { cursor: var(--dot-cursor, grabbing); }
+
+.crossword-dock > button:not(.dock-grip) { position: relative; }
+
+.crossword-dock > button:not(.dock-grip):is(:hover, :focus-visible)::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 12px / 1.3 var(--font-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.crossword-dock[data-labels-below] > [data-panel]::after {
+  top: calc(100% + 12px);
+  bottom: auto;
+}
+
+.crossword-dock > button:not(.dock-grip):last-child::after {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+body[data-playground="off"] :is(.drawing-tools, .drawing-hint) { display: none; }
+
+body[data-playground="off"] #drawing-canvas { touch-action: auto; }
+
+body[data-playground="on"] .crossword-page,
+body[data-playground="on"] .crossword-page * {
+  visibility: hidden !important;
+}
+
+body[data-playground="on"] .drawing-hint {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.crossword-page .crossword-message {
+  top: calc(50% + clamp(22px, min(6.7vw, 9.5svh), 66px) * var(--name-scale, 1) + 40px);
+  bottom: auto;
+}
+
+.crossword-page:has(.crossword[data-open]) .crossword-message {
+  top: calc(100% - max(92px, calc(env(safe-area-inset-bottom) + 84px)));
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .crossword-page .crossword-message {
+    transition: top var(--name-expand), transform var(--name-expand);
+  }
+}
+
+.theme-toggle {
+  position: fixed;
+  z-index: 4;
+  top: max(20px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  padding-inline: 10px;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.theme-toggle:active { transform: translateX(-50%); }
+
+.blueprint-note { display: none; }
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper: #f5f3ee;
+  --ink: #202632;
+  --muted: #4c5970;
+  --grid-line: #344d7020;
+  --eraser-ring: #344d70b3;
+  --annotation: #304e7a;
+}
+
+[data-theme="light"] .crossword-page {
+  --ink: hsl(220 20% calc(112% - var(--ink-lightness, 100%)));
+}
+
+[data-theme="light"] .crossword {
+  --about: #8b451e;
+  --writing: #51621e;
+  --projects: #245e86;
+  --hobbies: #69438c;
+}
+
+[data-theme="light"] #drawing-canvas { filter: invert(1); }
+[data-theme="light"] .message-role { color: #69438c; }
+[data-theme="light"] .message-study { color: #456331; }
+[data-theme="light"] .message-fintech { color: #904c2e; }
+[data-theme="light"] .message-trust { color: #245e86; }
+
+[data-theme="light"] .blueprint-note {
+  display: block;
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  top: max(72px, calc(env(safe-area-inset-top) + 66px));
+  z-index: 3;
+  pointer-events: none;
+}
+
+[data-theme="light"] :is(.crossword-name, .crossword-message, .crossword-dock, .crossword-word) {
+  outline: 1px dashed #304e7a75; /* taste-skill-ignore: blueprint measurement guides. */
+  outline-offset: 3px;
+}
+
+[data-theme="light"] :is(.crossword-name, .crossword-message, .crossword-dock)::before {
+  content: attr(data-measurement);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 7px);
+  background: var(--paper);
+  padding: 2px 4px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+
+
+[data-theme="light"] :is(.crossword-name, .crossword-message, .crossword-dock)::before,
+[data-theme="light"] .blueprint-note {
+  color: var(--annotation);
+  font: 11px / 1.3 var(--font-text);
+  letter-spacing: normal;
+}
+
+@media (max-width: 520px) {
+  .theme-toggle {
+    top: max(12px, env(safe-area-inset-top));
+    left: max(12px, env(safe-area-inset-left));
+    transform: none;
+  }
+
+  .theme-toggle:active { transform: none; }
+  [data-theme="light"] .blueprint-note { top: max(108px, calc(env(safe-area-inset-top) + 100px)); }
+}
+
+.crossword-settings select {
+  grid-column: 2 / -1;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--ink);
+  background: var(--paper);
+  font: inherit;
+}
+
+body:has(.crossword-page[data-type-pair="workshop"]) {
+  --font-display: "Arial Black", Arial, sans-serif;
+  --name-weight: 900;
+  --name-scale: .76;
+}
+
+body:has(.crossword-page[data-type-pair="technical"]) {
+  --font-display: Menlo, Consolas, monospace;
+  --name-weight: 700;
+  --name-scale: .68;
+  --font-text: "Helvetica Neue", Arial, sans-serif;
+}
+
+body:has(.crossword-page[data-type-pair="wayfinding"]) {
+  --font-display: Arial, Helvetica, sans-serif;
+  --name-weight: 700;
+  --name-scale: .8;
+  --font-text: Menlo, Consolas, monospace;
+}
+
+.theme-track {
+  display: inline-flex;
+  align-items: center;
+  width: 32px;
+  height: 18px;
+  padding: 3px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ink) 20%, var(--paper));
+}
+
+.theme-track::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--muted);
+}
+
+.theme-toggle[aria-pressed="true"] .theme-track::before {
+  transform: translateX(14px);
+  background: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme-track::before { transition: transform 160ms ease; }
+}
+
+.version-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block: 10px 4px;
+}
+
+.version-menu a { color: var(--muted); }
+.version-menu a:is(:hover, :focus-visible, [aria-current]) { color: var(--ink); }
+
+.crossword-dock > button:is(:hover, :focus-visible, :active, [aria-current], [aria-expanded="true"], [aria-pressed="true"]) {
+  background: transparent;
+}
