@@ -1,4 +1,4 @@
-import "./board-pan.js";
+import { stopBoardPan } from "./board-pan.js?smooth=1";
 
 const dock = document.querySelector(".crossword-dock");
 const grip = dock?.querySelector(".dock-grip");
@@ -171,6 +171,7 @@ function bounce(button, frames) {
 
 home.addEventListener("click", () => {
   stopReturn();
+  stopBoardPan();
   bounce(home, [{ transform: "scale(1)" }, { transform: "scale(.8)" }, { transform: "scale(1.18)" }, { transform: "scale(1)" }]);
   const fromX = viewport.scrollLeft;
   const fromY = viewport.scrollTop;
