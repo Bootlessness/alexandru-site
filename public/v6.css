@@ -211,15 +211,15 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .v7-page .crossword-dock .dock-tile { transition: translate 120ms ease-out; }
+  .v7-page .crossword-dock .dock-tile { transition: translate 190ms ease-in-out; }
   .v7-page .crossword-dock button:is(:hover, :focus-visible) .dock-tile {
     translate: 0 -6px;
-    animation: dock-lift 240ms ease-out;
+    animation: dock-lift 320ms ease-in-out;
   }
   @keyframes dock-lift {
     0% { translate: 0 0; }
-    45% { translate: 0 -9px; }
-    72% { translate: 0 -4px; }
+    45% { translate: 0 -8px; }
+    72% { translate: 0 -5px; }
     100% { translate: 0 -6px; }
   }
 }

@@ -163,7 +163,7 @@ function bounce(button, frames) {
   if (motionPreference.matches) return;
   const tile = button.querySelector(".dock-tile");
   tile.getAnimations().filter((animation) => animation.id === "dock-click").forEach((animation) => animation.cancel());
-  const animation = tile.animate(frames, { duration: 330, easing: "ease-out" });
+  const animation = tile.animate(frames, { duration: 420, easing: "ease-in-out" });
   animation.id = "dock-click";
   button.classList.add("dock-feedback");
   animation.finished.then(() => button.classList.remove("dock-feedback"), () => {});
