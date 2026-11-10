@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Alexandru Oprea — product design, clarity, and a little room to draw.">
+  <meta name="theme-color" content="#191b1e">
+  <title>Alexandru Oprea — A little room to draw</title>
+  <link rel="preload" href="/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/dm-sans.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/style.css?v4=grid-lag">
+  <link rel="stylesheet" href="/crossword.css">
+  <script src="/vendor/gsap.min.js" defer></script>
+  <script src="/vendor/Physics2DPlugin.min.js" defer></script>
+  <script type="module" src="/drawing.js"></script>
+  <script type="module" src="/v4-candle.js?grid=3"></script>
+</head>
+<body class="v4-page">
+  <canvas id="falling-shapes" aria-hidden="true"></canvas>
+  <canvas id="drawing-canvas" aria-label="A pencil drawing canvas. Close a loop to make it fall. Hold Command while dragging to erase."></canvas>
+  <div id="drawing-cursor" aria-hidden="true"></div>
+
+  <main class="page">
+    <section class="introduction" aria-labelledby="name">
+      <h1 id="name">Alexandru Oprea<span class="title-color" data-glow-text="Alexandru Oprea" aria-hidden="true">Alexandru Oprea</span></h1>
+      <p class="introduction-copy">
+      <span class="message-role">Product designer</span>, currently completing an
+      <span class="message-study">MSc in Product Management &amp; UX Design</span>, designing
+      <span class="message-fintech">fintech</span> products that earn
+      <span class="message-trust">trust</span> through clarity and restraint.
+    </p>
+      <a class="portfolio-link" href="https://www.designwithalexandru.com/" target="_blank" rel="noopener">
+        View my portfolio <span aria-hidden="true">↗</span>
+      </a>
+    </section>
+  </main>
+
+  <div class="drawing-tools" role="group" aria-label="Drawing tools" hidden>
+    <button id="eraser-toggle" type="button" aria-pressed="false" aria-controls="drawing-canvas">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m14 3 7 7-10 10H7l-5-5L14 3Z"/><path d="m9 8 7 7M10 20h11"/>
+      </svg>
+      <span>Eraser</span>
+    </button>
+    <button id="clear-drawing" type="button" aria-controls="drawing-canvas">Clear</button>
+    <button id="copy-svg" type="button">Copy SVG</button>
+  </div>
+  <p class="drawing-hint" hidden>Close a loop, then grab or throw it <span aria-hidden="true">·</span> Hold <kbd>⌘</kbd> to erase</p>
+  <details class="crossword-settings">
+    <summary>Settings</summary>
+    <nav class="version-menu" aria-label="Site versions"><span>Versions</span> <a href="/versions/v1.html">V1</a> <a href="/v2/" aria-current="page">V2</a> <a href="/v3/">V3</a> <a href="/v4/">V4</a> <a href="/v5/">V5</a> <a href="/v6/">V6</a> <a href="/v7/">V7</a></nav>
+    <details class="candle-settings">
+      <summary>Candle Glow</summary>
+      <label>Radius <input id="candle-radius" type="range" min="20" max="220" value="80"><output for="candle-radius">80 px</output></label>
+      <label>Text glow intensity <input id="candle-intensity" type="range" min="0" max="150" value="100"><output for="candle-intensity">100%</output></label>
+      <label>Color intensity <input id="candle-color" type="range" min="0" max="100" value="100"><output for="candle-color">100%</output></label>
+      <label>Animation <input id="candle-animation" type="range" min="0" max="100" value="35"><output for="candle-animation">35%</output></label>
+    </details>
+    <details class="candle-settings">
+      <summary>Grid Glow</summary>
+      <label>Grid glow radius <input id="grid-glow-radius" type="range" min="0" max="360" value="140"><output for="grid-glow-radius">140 px</output></label>
+      <label>Grid glow intensity <input id="grid-glow-intensity" type="range" min="0" max="100" value="25"><output for="grid-glow-intensity">25%</output></label>
+      <label>Light stutter <input id="grid-stutter" type="range" min="0" max="100" value="15"><output for="grid-stutter">15%</output></label>
+      <label>Glow lag <input id="grid-lag" type="range" min="0" max="1000" step="25" value="250"><output for="grid-lag">250 ms</output></label>
+    </details>
+  </details>
+  <input id="chalk-grain" type="hidden" value="35">
+  <p class="screen-reader-only" id="drawing-status" role="status">Pencil selected.</p>
+</body>
+</html>

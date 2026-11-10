@@ -91,6 +91,7 @@ body {
 }
 
 h1 {
+  --title-spectrum: linear-gradient(105deg, #da7584 18%, #e0a45f 34%, #7fb482 49%, #6aa9cc 64%, #b784cf 81%);
   position: relative;
   margin: 0;
   font: 400 clamp(58px, 7.3vw, 106px) / 1.05 var(--font-display);
@@ -102,14 +103,18 @@ h1:has(.title-color) {
   text-shadow: 0 0 24px #e9d7ba42; /* taste-skill-ignore: requested gentle title glow. */
 }
 
+.title-color, .v5-page .v3-letter > span::after {
+  --title-spotlight: radial-gradient(circle var(--candle-radius, 80px) at var(--reveal-x, -100px) var(--reveal-y, -100px), black 30%, transparent);
+}
+
 .title-color {
   position: absolute;
   inset: 0;
   color: transparent;
   text-shadow: none; /* taste-skill-ignore: the underlying title already carries the glow. */
-  background: linear-gradient(105deg, #da7584 18%, #e0a45f 34%, #7fb482 49%, #6aa9cc 64%, #b784cf 81%); /* taste-skill-ignore: the requested rainbow is clipped to the title. */
+  background: var(--title-spectrum); /* taste-skill-ignore: the requested rainbow is clipped to the title. */
   background-clip: text; /* taste-skill-ignore: clips the requested hover colors to the letters. */
-  mask-image: radial-gradient(circle 80px at var(--reveal-x, -100px) var(--reveal-y, -100px), black 30%, transparent); /* taste-skill-ignore: the pointer reveals the title colors within 80px. */
+  mask-image: var(--title-spotlight); /* taste-skill-ignore: the pointer reveals the title colors within 80px. */
 }
 
 .introduction-copy {
@@ -241,4 +246,104 @@ body[data-drawing-mode="eraser"] #drawing-cursor {
 @media (prefers-reduced-motion: reduce) {
   .portfolio-link span { transition: none; }
   .portfolio-link:hover span { transform: none; }
+}
+
+@media (any-pointer: fine) {
+  body :is(button, a, summary, input, select, .dock-grip, .dock-grip:active, .v3-name button),
+  body {
+    cursor: var(--dot-cursor);
+  }
+
+  body {
+    --dot-cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='2.5' fill='%23f7f4ed' stroke='%23191b1e'/%3E%3C/svg%3E") 4 4, auto;
+  }
+}
+
+.v4-page #name {
+  font-size: clamp(64px, 8.1vw, 118px);
+  color: white;
+  text-shadow: none;
+}
+
+.v4-page .title-color {
+  background-image: linear-gradient(105deg,
+    color-mix(in srgb, #da7584 var(--candle-color, 100%), white) 18%,
+    color-mix(in srgb, #e0a45f var(--candle-color, 100%), white) 34%,
+    color-mix(in srgb, #7fb482 var(--candle-color, 100%), white) 49%,
+    color-mix(in srgb, #6aa9cc var(--candle-color, 100%), white) 64%,
+    color-mix(in srgb, #b784cf var(--candle-color, 100%), white) 81%);
+}
+
+.v4-page .title-color::before {
+  content: attr(data-glow-text);
+  opacity: var(--candle-intensity, 1);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  text-shadow: 0 0 8px #ffc37d85, 0 0 23px #ff9d5270, 0 -4px 44px #ff853a38;
+}
+
+@media (max-width: 480px) {
+  .v4-page #name { font-size: 72px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .v4-page .title-color::before {
+    animation: v4-title-warmth var(--candle-duration, 6s) ease-in-out infinite alternate;
+    animation-play-state: var(--candle-play-state, running);
+  }
+
+  @keyframes v4-title-warmth {
+    from { text-shadow: 0 0 7px #ffc37d75, 0 0 20px #ff9d5260, 0 -2px 38px #ff853a30; }
+    to { text-shadow: 0 0 11px #ffd196a0, 0 -2px 27px #ffa75e85, 0 -7px 49px #ff853a48; }
+  }
+}
+
+.candle-settings { margin-top: 10px; }
+
+.candle-ember {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #ffd296 var(--candle-color, 100%), white);
+  box-shadow: 0 0 6px currentColor;
+  color: inherit;
+  pointer-events: none;
+}
+
+.v4-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, #ffc580 1px, transparent 1px),
+    linear-gradient(to bottom, #ffc580 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center;
+  filter: drop-shadow(0 0 4px #ff913e);
+  opacity: calc(var(--grid-glow-opacity, 0) * var(--grid-flicker, 1));
+  mask-image: radial-gradient(circle var(--grid-glow-radius, 140px) at var(--grid-glow-x, 0px) var(--grid-glow-y, 0px), black, transparent);
+}
+
+.v4-page { position: relative; }
+.candle-settings label { grid-template-columns: 145px 78px 5ch; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .v4-page::before { transition: opacity var(--grid-fade-duration, 250ms) ease-out; }
+}
+
+.v4-morning #name {
+  font-size: clamp(64px, 8.1vw, 118px);
+  text-shadow: 0 0 27px #e9d7ba4d;
+}
+
+@media (max-width: 480px) {
+  .v4-morning #name { font-size: 72px; }
+}
+
+.v4-morning .title-color {
+  --title-spectrum: linear-gradient(105deg, #b784cf 12%, #96b77e 37%, #d9a781 62%, #6aa9cc 88%);
+  --title-spotlight: radial-gradient(circle 80px at var(--reveal-x, -100px) var(--reveal-y, -100px), black 48%, transparent);
 }

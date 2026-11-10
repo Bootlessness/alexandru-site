@@ -1,0 +1,165 @@
+.v3-page {
+  --font-display: Arial, Helvetica, sans-serif;
+  --font-text: Menlo, Consolas, monospace;
+  --paper: #1c201f;
+}
+
+.v3-settings {
+  top: max(20px, env(safe-area-inset-top));
+  left: max(24px, env(safe-area-inset-left));
+  right: auto;
+}
+
+.v3-stage {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 70px 20px;
+}
+
+.v3-identity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: gap 450ms cubic-bezier(.55,0,.3,1);
+}
+
+.v3-identity[data-revealed] { gap: clamp(20px, 6vw, 80px); }
+
+.v3-name {
+  font: 700 clamp(30px, min(8.3vw, (100vw - 130px) * .18), 106px) / .8 var(--font-display);
+  letter-spacing: -.045em;
+}
+
+.v3-name button {
+  display: grid;
+  justify-items: start;
+  min-width: 0;
+  padding: 0;
+  gap: 0;
+  color: #fff;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: var(--dot-cursor, default);
+}
+
+.v3-name button:active { transform: none; }
+.v3-name-row { display: flex; }
+.v3-letter { display: inline-block; }
+.v3-letter > span { display: inline-block; }
+
+.v3-rest {
+  display: grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 480ms cubic-bezier(.55,0,.3,1);
+}
+
+.v3-rest > span { min-width: 0; white-space: nowrap; overflow: clip; }
+.v3-identity[data-revealed] .v3-rest { grid-template-columns: 1fr; }
+.v3-identity[data-ready] .v3-rest > span { overflow: visible; }
+.v3-rest .v3-letter { visibility: hidden; }
+.v3-identity[data-revealed] .v3-rest .v3-letter {
+  animation: v3-type 1ms step-end both;
+  animation-delay: calc(70ms + var(--order) * 32ms);
+}
+
+@keyframes v3-type {
+  from { visibility: hidden; }
+  to { visibility: visible; }
+}
+
+.v3-nav {
+  display: grid;
+  justify-items: start;
+  gap: 0;
+}
+
+.v3-nav button {
+  position: relative;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 5px;
+  min-width: 0;
+  min-height: 28px;
+  color: var(--word-color);
+  font-size: clamp(12px, 1.35vw, 18px);
+  white-space: nowrap;
+}
+
+.v3-nav button:is(:hover, :focus-visible) { color: var(--word-color); }
+.v3-nav canvas {
+  position: absolute;
+  inset: -5px -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 10px);
+  pointer-events: none;
+}
+
+.v3-word { display: none; }
+.v3-identity[data-revealed] .v3-word { display: inline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-identity, .v3-rest { transition: none; }
+  .v3-identity[data-revealed] .v3-rest .v3-letter { animation: none; visibility: visible; }
+}
+
+.v5-page .v3-name {
+  --font-display: "Instrument Serif", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -.035em;
+  text-shadow: 0 0 24px #e9d7ba42;
+}
+
+.v5-page .v3-letter > span { position: relative; }
+.v5-page .v3-letter > span::after {
+  content: attr(data-letter) / "";
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  text-shadow: none;
+  background: var(--title-spectrum);
+  background-size: var(--name-width, 100%) 100%;
+  background-position: var(--spectrum-x, 0px) 0;
+  background-clip: text;
+  mask-image: var(--title-spotlight);
+  pointer-events: none;
+}
+
+[data-theme="dark"] body.v3-waves {
+  background-image: radial-gradient(circle, #dbe7e24d 0.95px, transparent 1.35px);
+  background-size: 32px 32px;
+  background-position: calc(50% - 16px) calc(50% - 16px);
+}
+
+[data-theme="dark"] body.v3-waves.wave-field-ready {
+  background-image: none;
+}
+
+#wave-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.v3-waves .v3-stage { position: relative; }
+.v3-waves .v3-settings label { grid-template-columns: 145px 78px 5ch; }
+
+@media (any-pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .v3-waves.wave-field-ready:not(.pointer-glow-off) { --dot-cursor: none; }
+}
+
+.v3-waves .v3-nav button:is(:hover, :focus-visible) {
+  text-shadow: 0 0 9px currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .v3-waves .v3-nav button > span {
+    transition: translate 160ms ease-out, text-shadow 160ms ease-out;
+  }
+
+  .v3-waves .v3-nav button:is(:hover, :focus-visible) > span {
+    translate: 4px 0;
+  }
+}

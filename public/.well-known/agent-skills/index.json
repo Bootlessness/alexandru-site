@@ -1,0 +1,9 @@
+{
+  "skills": [
+    {
+      "name": "visit",
+      "description": "How to read and cite this site.",
+      "url": "/.well-known/agent-skills/visit/SKILL.md"
+    }
+  ]
+}

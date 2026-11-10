@@ -1,4 +1,4 @@
-import { pencilSegment } from "./drawing.js";
+import { pencilSegment } from "./pencil.js";
 
 const crossword = document.querySelector(".crossword");
 const title = crossword.querySelector(".name-toggle");

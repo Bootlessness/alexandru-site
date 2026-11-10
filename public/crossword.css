@@ -187,7 +187,7 @@
   background: var(--paper);
 }
 
-.crossword-settings summary { cursor: pointer; }
+.crossword-settings summary { cursor: var(--dot-cursor, pointer); }
 .crossword-settings label {
   display: grid;
   grid-template-columns: 116px 78px 5ch;
@@ -359,12 +359,12 @@ body:has(.crossword-page) .drawing-hint {
 .crossword-dock .dock-grip {
   width: 24px;
   min-width: 24px;
-  cursor: grab;
+  cursor: var(--dot-cursor, grab);
   touch-action: none;
   user-select: none;
 }
 
-.crossword-dock .dock-grip:active { cursor: grabbing; }
+.crossword-dock .dock-grip:active { cursor: var(--dot-cursor, grabbing); }
 
 .crossword-dock > button:not(.dock-grip) { position: relative; }
 
@@ -432,7 +432,7 @@ body[data-playground="on"] .drawing-hint {
   left: 50%;
   transform: translateX(-50%);
   padding-inline: 10px;
-  background: var(--paper);
+  background: transparent;
   border-radius: 8px;
 }
 
@@ -539,4 +539,45 @@ body:has(.crossword-page[data-type-pair="wayfinding"]) {
   --name-weight: 700;
   --name-scale: .8;
   --font-text: Menlo, Consolas, monospace;
+}
+
+.theme-track {
+  display: inline-flex;
+  align-items: center;
+  width: 32px;
+  height: 18px;
+  padding: 3px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ink) 20%, var(--paper));
+}
+
+.theme-track::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--muted);
+}
+
+.theme-toggle[aria-pressed="true"] .theme-track::before {
+  transform: translateX(14px);
+  background: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme-track::before { transition: transform 160ms ease; }
+}
+
+.version-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block: 10px 4px;
+}
+
+.version-menu a { color: var(--muted); }
+.version-menu a:is(:hover, :focus-visible, [aria-current]) { color: var(--ink); }
+
+.crossword-dock > button:is(:hover, :focus-visible, :active, [aria-current], [aria-expanded="true"], [aria-pressed="true"]) {
+  background: transparent;
 }

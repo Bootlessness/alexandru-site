@@ -1,0 +1,11 @@
+# Alexandru Oprea
+
+> I'm a product designer completing an MSc in Product Management & UX Design. I design fintech products that earn trust through clarity and restraint.
+
+## Pages
+
+- [Homepage](https://alexandru-site.alex-oprea-ao.workers.dev/index.md): My background, the Works and Writing sections, and the drawing playground.
+
+## For visiting agents
+
+- [How to read and cite this site](https://alexandru-site.alex-oprea-ao.workers.dev/.well-known/agent-skills/visit/SKILL.md)
