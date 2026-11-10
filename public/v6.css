@@ -129,7 +129,7 @@
 }
 .card-group--works { right: calc(50% + 50vw - 18px); }
 .card-group--about { left: calc(50% + 50vw - 18px); }
-.card-group--writing { top: calc(50% + 50dvh + 32px); left: 50%; transform: translateX(-50%); }
+.card-group--writing { top: var(--writing-top, calc(50% + 50dvh + 32px)); left: 50%; transform: translateX(-50%); }
 .card-group--contact { top: calc(50% - 50dvh - 32px); left: 50%; transform: translate(-50%, -100%); }
 .contact-card form { display: grid; gap: 12px; padding: 10px; }
 .contact-card label { display: grid; gap: 4px; }
@@ -338,9 +338,71 @@
 }
 
 .v7-page .node-scene {
+  position: relative;
   display: grid;
   align-items: center;
   padding-bottom: 56px;
+}
+.board-compass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--muted) 74%, var(--paper));
+  font: 12px/1.4 var(--font-text);
+}
+.board-compass p { position: absolute; margin: 0; }
+.board-tutorial {
+  position: fixed;
+  z-index: 5;
+  left: 50%;
+  top: max(60px, calc(env(safe-area-inset-top) + 52px));
+  translate: -50% 0;
+  margin: 0;
+  width: min(300px, calc(100vw - 32px));
+  padding: 12px 20px;
+  color: #fff;
+  font: 14px/1.4 var(--font-text);
+  text-align: center;
+  pointer-events: none;
+}
+.board-tutorial svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.v7-intro .board-tutorial { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .v7-intro .board-tutorial { visibility: visible; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .board-tutorial:not([hidden]) :is(svg, .phrase-wave-word > span) {
+    animation: tutorial-wave 2.8s ease-in-out var(--wave-delay, 0ms) infinite;
+  }
+}
+@keyframes tutorial-wave {
+  0%, 10%, 100% { transform: translateY(0); }
+  4% { transform: translateY(-5px); }
+  7.5% { transform: translateY(1px); }
+}
+.compass-north, .compass-south { left: 50%; translate: -50% 0; text-align: center; }
+.compass-north { top: var(--compass-north, 24%); translate: -50% -50%; }
+.compass-south { top: var(--compass-south, 74%); translate: -50% -50%; }
+.compass-west, .compass-east { top: 48%; }
+.compass-west { left: var(--compass-west, 12%); translate: -50% -50%; }
+.compass-east { right: var(--compass-east, 12%); translate: 50% -50%; }
+@media (max-width: 720px) {
+  .compass-west, .compass-east { top: 30%; }
+  .compass-west { left: 14px; translate: 0 -50%; }
+  .compass-east { right: 14px; translate: 0 -50%; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .v7-intro .board-compass { animation: board-dot-in 400ms 1300ms backwards; }
 }
 
 .v7-language { gap: 4px; }
@@ -394,6 +456,7 @@
 }
 
 .v7-page .crossword-dock {
+  bottom: max(48px, env(safe-area-inset-bottom));
   background: transparent;
   border: 0;
   box-shadow: none;

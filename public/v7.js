@@ -67,6 +67,8 @@ function preparePhraseWaves() {
 }
 
 preparePhraseWaves();
+const tutorialLabel = document.querySelector(".board-tutorial-label");
+prepareWave(tutorialLabel);
 const translations = {
   en: ["Language", "Settings", "Versions", "Copy SVG", "Home", "About", "Works", "Writing",
     "Move dock with arrow keys", "Drag to move the dock", "SVG copied", "SVG downloaded"],
@@ -84,6 +86,17 @@ function setLanguage(language) {
   const [languageLabel, settings, versions, copy, home, about, works, writing,
     gripLabel, gripTitle, copied, downloaded] = translations[language];
   document.documentElement.lang = language;
+  tutorialLabel.textContent = {
+    en: "click and drag to explore the board",
+    fr: "Cliquez et faites glisser pour explorer",
+    ro: "Apasă și trage pentru a explora",
+  }[language];
+  prepareWave(tutorialLabel);
+  const compass = document.querySelector(".board-compass");
+  const compassLabels = [works, "Contact", about, writing];
+  compass?.querySelectorAll("[data-compass-label]").forEach((element, index) => {
+    element.textContent = compassLabels[index];
+  });
   description.innerHTML = descriptions[language] ?? englishDescription;
   preparePhraseWaves();
   document.querySelector(".v7-language").setAttribute("aria-label", languageLabel);
@@ -377,10 +390,50 @@ for (const [button, element] of destinations) {
 viewport.addEventListener("scroll", syncDestination, { passive: true });
 viewport.addEventListener("pointerdown", stopReturn);
 viewport.addEventListener("wheel", stopReturn, { passive: true });
-window.addEventListener("resize", stopReturn);
+function layoutCompass() {
+  const compass = world.querySelector(".board-compass");
+  const frame = compass.getBoundingClientRect();
+  const title = destinations.get(home).getBoundingClientRect();
+  const intro = description.closest(".introduction").getBoundingClientRect();
+  const works = world.querySelector(".card-group--works").getBoundingClientRect();
+  const about = world.querySelector(".card-group--about").getBoundingClientRect();
+  const writingGroup = world.querySelector(".card-group--writing");
+  const homeBottom = centeredPosition(destinations.get(home)).y + viewport.clientHeight;
+  writingGroup.style.setProperty("--writing-top", `${homeBottom + 32}px`);
+  const sideGap = Math.max(0, (title.left - works.right + about.left - title.right) / 4);
+  const homeViewportBottom = world.getBoundingClientRect().top + homeBottom;
+  const verticalGap = Math.max(14, Math.min(sideGap, homeViewportBottom - intro.bottom - 200));
+  compass.style.setProperty("--compass-west", `${(works.right + title.left) / 2 - frame.left}px`);
+  compass.style.setProperty("--compass-east", `${frame.right - (about.left + title.right) / 2}px`);
+  compass.style.setProperty("--compass-north", `${intro.top - verticalGap - frame.top}px`);
+  compass.style.setProperty("--compass-south", `${intro.bottom + verticalGap - frame.top}px`);
+}
+
+window.addEventListener("resize", () => {
+  const current = dock.querySelector("[aria-current]");
+  stopReturn();
+  stopBoardPan();
+  if (destinations.has(current)) {
+    const { x, y } = centeredPosition(destinations.get(current));
+    viewport.scrollTo(x, y);
+  }
+  syncDestination();
+  layoutCompass();
+});
+const compassLayout = new ResizeObserver(layoutCompass);
+compassLayout.observe(world);
+compassLayout.observe(description.closest(".introduction"));
 const initialHome = centeredPosition(destinations.get(home));
 viewport.scrollTo(initialHome.x, initialHome.y);
 syncDestination();
+const tutorial = document.querySelector(".board-tutorial");
+viewport.addEventListener("scroll", () => {
+  if (document.body.classList.contains("v7-intro") && !motionPreference.matches) return;
+  const homePosition = centeredPosition(destinations.get(home));
+  if (Math.hypot(viewport.scrollLeft - homePosition.x, viewport.scrollTop - homePosition.y) > 4) {
+    tutorial.hidden = true;
+  }
+}, { passive: true });
 
 if (!motionPreference.matches) {
   const title = destinations.get(home);
@@ -423,6 +476,7 @@ if (!motionPreference.matches) {
   window.setTimeout(() => {
     document.body.classList.remove("v7-intro");
     dots.remove();
+    layoutCompass();
     controls.forEach((element) => { element.inert = false; });
   }, 1770);
 }
