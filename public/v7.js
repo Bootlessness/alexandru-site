@@ -61,7 +61,7 @@ function prepareWave(phrase, stagger = 12) {
 }
 
 function preparePhraseWaves() {
-  for (const phrase of description.querySelectorAll(".message-role, .message-study, .message-fintech, .message-trust")) {
+  for (const phrase of description.querySelectorAll(".message-role, .message-study, .message-fintech, .message-trust, .message-ai")) {
     prepareWave(phrase);
   }
 }
@@ -76,8 +76,8 @@ const translations = {
     "Mută meniul cu tastele săgeată", "Trage pentru a muta meniul", "SVG copiat", "SVG descărcat"],
 };
 const descriptions = {
-  fr: 'Salut ! Je suis <strong class="message-role">designer produit</strong>. Je termine un <strong class="message-study">MSc en management de produit et design UX</strong>, et je conçois des produits qui inspirent <strong class="message-trust">confiance</strong>',
-  ro: 'Salut! Sunt <strong class="message-role">designer de produs</strong>, urmez un <strong class="message-study">master în management de produs și design UX</strong> și proiectez produse care câștigă <strong class="message-trust">încrederea</strong>',
+  fr: 'Salut ! Je suis <strong class="message-role">designer produit</strong>. Je termine un <strong class="message-study">MSc en management de produit et design UX</strong>, en étudiant comment les utilisateurs gagnent la <strong class="message-trust">confiance</strong> à l’ère de l’<strong class="message-ai">IA</strong>',
+  ro: 'Salut! Sunt <strong class="message-role">designer de produs</strong>, urmez un <strong class="message-study">master în management de produs și design UX</strong> cu accent pe modul în care utilizatorii câștigă <strong class="message-trust">încrederea</strong> în era <strong class="message-ai">IA</strong>',
 };
 
 function setLanguage(language) {

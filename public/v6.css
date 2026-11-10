@@ -448,7 +448,7 @@
 }
 
 .v7-page .introduction-copy { color: #e2e1de; }
-.v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust) {
+.v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust, .message-ai) {
   color: #fff;
   font-weight: 700;
   pointer-events: auto;
@@ -457,13 +457,14 @@
 .v7-page .introduction:has(.message-study:hover) { --phrase-color: #96b77e; }
 .v7-page .introduction:has(.message-fintech:hover) { --phrase-color: #d9a781; }
 .v7-page .introduction:has(.message-trust:hover) { --phrase-color: #6aa9cc; }
-.v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust):hover {
+.v7-page .introduction:has(.message-ai:hover) { --phrase-color: #e2c36f; }
+.v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust, .message-ai):hover {
   color: var(--phrase-color);
 }
 .phrase-wave-word { white-space: nowrap; }
 .phrase-wave-word > span { display: inline-block; pointer-events: none; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust):hover .phrase-wave-word > span {
+  .v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust, .message-ai):hover .phrase-wave-word > span {
     animation: phrase-wave 230ms ease-in-out var(--wave-delay);
   }
 }
