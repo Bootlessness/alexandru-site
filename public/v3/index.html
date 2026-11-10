@@ -15,7 +15,8 @@
   <canvas id="wave-field" aria-hidden="true"></canvas>
   <details class="crossword-settings v3-settings">
     <summary>Settings</summary>
-    <nav class="version-menu" aria-label="Site versions"><span>Versions</span> <a href="/versions/v1.html">V1</a> <a href="/v2/">V2</a> <a href="/v3/" aria-current="page">V3</a> <a href="/v4/">V4</a> <a href="/v5/">V5</a> <a href="/v6/">V6</a> <a href="/v7/">V7</a></nav>
+    <div data-settings-navigation></div>
+    <script type="module" src="/settings-navigation.js"></script>
     <label>Letter distance <input id="letter-distance" type="range" min="0" max="100" value="42"><output for="letter-distance">42 px</output></label>
     <label>Letter speed <input id="letter-speed" type="range" min="10" max="100" value="45"><output for="letter-speed">45%</output></label>
     <label>Wave amount <input id="wave-amount" type="range" min="0" max="100" value="0"><output for="wave-amount">0%</output></label>

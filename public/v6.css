@@ -345,6 +345,10 @@
 
 .v7-language { gap: 4px; }
 .v7-language button { padding-inline: 8px; border-radius: 6px; }
+.v7-language button:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .v7-language button[aria-pressed="true"] { background: #ffffff13; }
 .v7-coordinates {
   position: fixed;
@@ -448,6 +452,49 @@
 }
 
 .v7-page .introduction-copy { color: #e2e1de; }
+.v8-skills {
+  width: min(100%, 440px);
+  margin: 24px auto 0;
+  color: var(--muted);
+  font: 12px/1.4 var(--font-text);
+}
+.v8-skills ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.v8-skills li {
+  pointer-events: auto;
+}
+.v8-skills li > span {
+  display: block;
+  pointer-events: none;
+  padding: 4px 9px;
+  border: 1px solid #ffffff24;
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.v8-skills li:hover > span {
+  color: var(--phrase-color);
+  border-color: currentColor;
+}
+.v8-page :is(.v8-skills li > span, .showcase-card--note, .card-image--multiple i, .contact-card input, .contact-card textarea, .card-detail button, .v7-minimap) {
+  border-width: 2px;
+}
+.v8-page :is(.crossword-dock svg, .showcase-card footer svg) { stroke-width: 2px; }
+.introduction:has(.v8-skills li:nth-child(1):hover) { --phrase-color: #76cbb5; }
+.introduction:has(.v8-skills li:nth-child(2):hover) { --phrase-color: #9dacf2; }
+.introduction:has(.v8-skills li:nth-child(3):hover) { --phrase-color: #ee8b79; }
+.introduction:has(.v8-skills li:nth-child(4):hover) { --phrase-color: #df92b2; }
+@media (prefers-reduced-motion: no-preference) {
+  .v8-skills { animation: description-arrive 320ms 1200ms ease-out backwards; }
+  .v8-skills li:hover > span { animation: phrase-wave 320ms ease-in-out; }
+}
 .v7-page .introduction-copy :is(.message-role, .message-study, .message-fintech, .message-trust, .message-ai) {
   color: #fff;
   font-weight: 700;
