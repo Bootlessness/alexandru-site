@@ -191,7 +191,7 @@ for (const card of world.querySelectorAll(".card-group--works .showcase-card, .c
     cardLink.setAttribute("aria-haspopup", "dialog");
   }
   card.addEventListener("click", (event) => {
-    if (event.target.closest(".card-grip")) return;
+    if (event.target.closest(".card-grip, .professional-metrics")) return;
     event.preventDefault();
     stopReturn();
     stopBoardPan();
@@ -262,6 +262,34 @@ for (const card of world.querySelectorAll(".showcase-card")) {
   let x = 0;
   let y = 0;
   let drag;
+  const followers = [...card.querySelectorAll(".professional-metrics :is(summary, li)")].map((tile) => ({
+    tile, x: 0, y: 0, response: 65 + Math.random() * 95, branch: tile.matches("summary") ? 15 : 16,
+  }));
+  let followFrame = 0;
+  let followTime = 0;
+
+  function followMetrics(now) {
+    const elapsed = now - followTime;
+    followTime = now;
+    let moving = false;
+    for (const follower of followers) {
+      const ease = 1 - Math.exp(-elapsed / follower.response);
+      follower.x += (x - follower.x) * ease;
+      follower.y += (y - follower.y) * ease;
+      if (Math.hypot(x - follower.x, y - follower.y) < 0.25) {
+        follower.x = x;
+        follower.y = y;
+      } else {
+        moving = true;
+      }
+      const dx = follower.x - x;
+      const dy = follower.y - y;
+      follower.tile.style.translate = `${dx}px ${dy}px`;
+      follower.tile.style.setProperty("--branch-length", `${Math.hypot(follower.branch + dx, dy)}px`);
+      follower.tile.style.setProperty("--branch-angle", `${Math.atan2(dy, follower.branch + dx)}rad`);
+    }
+    followFrame = moving ? requestAnimationFrame(followMetrics) : 0;
+  }
 
   function moveCard(nextX, nextY) {
     const bounds = world.getBoundingClientRect();
@@ -269,6 +297,10 @@ for (const card of world.querySelectorAll(".showcase-card")) {
     x = Math.min(x + bounds.right - rect.right, Math.max(x + bounds.left - rect.left, nextX));
     y = Math.min(y + bounds.bottom - rect.bottom, Math.max(y + bounds.top - rect.top, nextY));
     card.style.translate = `${x}px ${y}px`;
+    if (followers.length && !motionPreference.matches && !followFrame) {
+      followTime = performance.now();
+      followFrame = requestAnimationFrame(followMetrics);
+    }
     layoutMinimap();
     syncDestination();
   }
