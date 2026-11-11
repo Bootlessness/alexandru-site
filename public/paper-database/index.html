@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f6ef">
+  <meta name="description" content="Browse Alexandru Oprea’s product design work, writing, and background in a hand-drawn portfolio database.">
+  <title>Paper Database — Alexandru Oprea</title>
+  <link rel="stylesheet" href="./paper.css">
+  <script type="module" src="./paper.js"></script>
+  <script type="module" src="../settings-navigation.js?style=1"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to records</a>
+  <aside class="rail" id="folder-panel" aria-label="Portfolio navigation">
+    <a class="brand" href="#index" data-folder="index">
+      <canvas class="icon brand-mark" data-icon="stack" aria-hidden="true"></canvas>
+      <span>Paper<br>Database</span>
+    </a>
+    <nav class="folder-nav" aria-label="Folders">
+      <p class="rail-label">Folders</p>
+      <div id="folders"></div>
+    </nav>
+    <nav class="rail-links" aria-label="Portfolio links">
+      <p class="rail-label">Links</p>
+      <a class="rail-link" href="../sample-cv.html"><canvas class="icon" data-icon="file" aria-hidden="true"></canvas><span class="marked">CV</span><span class="outbound" aria-hidden="true">↗</span></a>
+      <a class="rail-link" href="../"><canvas class="icon" data-icon="arrow" aria-hidden="true"></canvas><span class="marked">Main portfolio</span></a>
+    </nav>
+    <div class="rail-owner">
+      <span class="initials" aria-hidden="true">AO</span>
+      <span><strong>Alexandru Oprea</strong><small>Product designer</small></span>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <button class="mobile-menu" type="button" aria-controls="folder-panel" aria-expanded="false"><canvas class="icon" data-icon="menu" aria-hidden="true"></canvas> Folders</button>
+      <div class="breadcrumbs" aria-label="Current folder"><span>Portfolio</span><span aria-hidden="true">/</span><strong id="crumb">Index</strong></div>
+      <label class="search">
+        <canvas class="icon" data-icon="search" aria-hidden="true"></canvas>
+        <input id="search" type="search" placeholder="Find a record…" aria-label="Search all records" autocomplete="off">
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <details class="paper-settings">
+        <summary>Settings</summary>
+        <div data-style-navigation></div>
+      </details>
+    </header>
+
+    <main class="sheet" id="main">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow" id="eyebrow">Paper Database / Portfolio</p>
+          <h1 id="page-title" tabindex="-1">Alexandru Oprea</h1>
+          <p id="page-description">Salut! I’m a product designer exploring how people build trust in fintech and in the age of AI.</p>
+        </div>
+        <div class="intro-art"><canvas class="intro-sketch" data-sketch="index" aria-hidden="true"></canvas></div>
+      </section>
+      <section class="database" aria-labelledby="collection-title">
+        <div class="database-heading">
+          <h2 id="collection-title">All records</h2>
+          <span id="record-count" aria-live="polite"></span>
+        </div>
+        <div class="toolbar pencil-rule">
+          <div class="views" role="group" aria-label="Record view">
+            <button type="button" data-view="gallery" aria-pressed="true"><canvas class="icon" data-icon="gallery" aria-hidden="true"></canvas><span class="marked">Gallery</span></button>
+            <button type="button" data-view="table" aria-pressed="false"><canvas class="icon" data-icon="table" aria-hidden="true"></canvas><span class="marked">Table</span></button>
+          </div>
+          <label class="sort"><canvas class="icon" data-icon="sort" aria-hidden="true"></canvas><select id="sort" aria-label="Sort records"><option value="filed">File order</option><option value="title">Title A–Z</option><option value="folder">Folder</option></select></label>
+        </div>
+        <section id="record" aria-labelledby="record-title" hidden>
+          <div class="detail-header">
+            <span id="detail-folder"></span>
+            <button class="close-record" type="button">← Back to records</button>
+          </div>
+          <div id="detail-content"></div>
+        </section>
+        <div id="records"></div>
+        <noscript><p>Enable JavaScript to browse the database, or <a href="../">open the main portfolio</a>.</p></noscript>
+      </section>
+    </main>
+  </div>
+
+</body>
+</html>

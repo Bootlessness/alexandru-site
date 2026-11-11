@@ -1,4 +1,5 @@
 const placeholder = document.querySelector("[data-settings-navigation]");
+const stylePlaceholder = document.querySelector("[data-style-navigation]");
 const page = location.pathname.replace(/\/index\.html$/, "/");
 const current = page === "/v7/" ? "/" : page;
 const versions = [
@@ -6,10 +7,20 @@ const versions = [
   ["/v4/", "V4"], ["/v5/", "V5"], ["/v6/", "V6"], ["/v8/", "V8"],
 ];
 const archives = [["/a1/", "A1"], ["/a2/", "A2"]];
-const links = (items) => items.map(([href, label]) =>
-  `<a href="${href}"${href === current ? ' aria-current="page"' : ""}>${label}</a>`
+const styles = [["/paper-database/", "Paper Database"], ["/", "Digital Canvas"]];
+const links = (items, mark = false) => items.map(([href, label]) =>
+  `<a href="${href}"${href === current ? ' aria-current="page"' : ""}>${mark ? `<span class="marked">${label}</span>` : label}</a>`
 ).join(" ");
-placeholder.outerHTML = `
-  <nav class="version-menu" aria-label="Site versions"><span>Versions</span> ${links(versions)}</nav>
-  <nav class="version-menu archive-menu" aria-label="Archives"><span>Archives</span> ${links(archives)}</nav>
-`;
+
+if (placeholder) {
+  placeholder.outerHTML = `
+    <nav class="version-menu" aria-label="Site versions"><span>Versions</span> ${links(versions)}</nav>
+    <nav class="version-menu archive-menu" aria-label="Archives"><span>Archives</span> ${links(archives)}</nav>
+  `;
+}
+
+if (stylePlaceholder) {
+  stylePlaceholder.outerHTML = `
+    <nav class="version-menu style-menu" aria-label="Style"><span>Style</span> ${links(styles, true)}</nav>
+  `;
+}
