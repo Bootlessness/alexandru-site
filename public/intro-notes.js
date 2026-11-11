@@ -37,6 +37,8 @@ const wire = scene.querySelector(".intro-note-wire");
 const path = wire.querySelector("path");
 const sourcePort = wire.querySelector("circle");
 let trigger;
+let keepOpen = false;
+let closeTimer;
 
 function prepareTriggers() {
   const phrases = description.querySelectorAll("strong:is(.message-role, .message-study, .message-trust, .message-ai)");
@@ -52,6 +54,15 @@ function prepareTriggers() {
     link.setAttribute("aria-expanded", "false");
     link.dataset.note = [...phrase.classList].find(name => name.startsWith("message-")).slice(8);
     link.append(...phrase.childNodes);
+    link.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse" || event.pointerType === "pen") showNote(link);
+    });
+    link.addEventListener("pointerleave", () => {
+      if (link === trigger) scheduleNoteClose();
+    });
+    link.addEventListener("pointerdown", (event) => {
+      link.dataset.pointerType = event.pointerType;
+    });
     phrase.replaceWith(link);
   }
 }
@@ -80,6 +91,8 @@ function positionNote() {
 }
 
 function closeNote(restoreFocus = false) {
+  clearTimeout(closeTimer);
+  keepOpen = false;
   if (!trigger) return;
   trigger.setAttribute("aria-expanded", "false");
   card.hidden = true;
@@ -88,12 +101,15 @@ function closeNote(restoreFocus = false) {
   trigger = undefined;
 }
 
-function openNote(link) {
-  stopBoardPan();
-  const previous = trigger;
-  closeNote();
-  if (link === previous) return;
+function scheduleNoteClose() {
+  clearTimeout(closeTimer);
+  if (!keepOpen) closeTimer = setTimeout(closeNote, 300);
+}
 
+function showNote(link) {
+  clearTimeout(closeTimer);
+  if (link === trigger) return;
+  closeNote();
   trigger = link;
   const language = copy[document.documentElement.lang] ?? copy.en;
   const color = colors[link.dataset.note];
@@ -108,7 +124,16 @@ function openNote(link) {
   // Restart the wire drawing when switching phrases as well as when first opening.
   wire.getBoundingClientRect();
   wire.classList.add("is-open");
+}
 
+function toggleNote(link) {
+  if (link === trigger && keepOpen) {
+    closeNote();
+    return;
+  }
+  stopBoardPan();
+  showNote(link);
+  keepOpen = true;
   const bounds = card.getBoundingClientRect();
   const dockBounds = dock.getBoundingClientRect();
   const overlapsDock = bounds.left < dockBounds.right && bounds.right > dockBounds.left && bounds.top < dockBounds.bottom;
@@ -120,18 +145,27 @@ description.addEventListener("click", (event) => {
   const link = event.target.closest(".intro-note-trigger");
   if (!link) return;
   event.preventDefault();
-  openNote(link);
+  const pointerType = event.pointerType || link.dataset.pointerType;
+  if (event.detail === 0 || pointerType === "touch" || pointerType === "pen") toggleNote(link);
 });
 description.addEventListener("keydown", (event) => {
   if (event.key === " " && event.target.matches(".intro-note-trigger")) {
     event.preventDefault();
-    openNote(event.target);
+    toggleNote(event.target);
   }
+});
+card.addEventListener("pointerenter", () => clearTimeout(closeTimer));
+card.addEventListener("pointerleave", scheduleNoteClose);
+card.addEventListener("focusin", () => {
+  clearTimeout(closeTimer);
+  keepOpen = true;
 });
 card.addEventListener("pointerdown", (event) => event.stopPropagation());
 dismiss.addEventListener("click", () => closeNote(true));
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && trigger && !document.querySelector("dialog[open]")) closeNote(true);
+  if (event.key === "Escape" && trigger && !document.querySelector("dialog[open]")) {
+    closeNote(card.contains(document.activeElement));
+  }
 });
 new MutationObserver(prepareTriggers).observe(description, { childList: true });
 const layout = new ResizeObserver(positionNote);
