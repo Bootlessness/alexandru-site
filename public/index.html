@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="/v6.css?board=86">
   <script type="module" src="/v7.js?dock=53"></script>
   <script type="module" src="/v7-export.js?ui=5"></script>
+  <link rel="stylesheet" href="/intro-notes.css?v=2">
+  <script type="module" src="/intro-notes.js?v=4"></script>
 </head>
 <body class="v4-morning v6-page v7-page v7-intro">
   <div class="node-viewport" tabindex="0" aria-label="Pannable portfolio board">
@@ -29,6 +31,17 @@
     </p>
     </section>
   </main>
+        <svg class="intro-note-wire" aria-hidden="true">
+          <path pathLength="1"/>
+          <circle r="3"/>
+        </svg>
+        <section id="intro-note" class="intro-note" aria-labelledby="intro-note-title" hidden>
+          <header>
+            <h2 id="intro-note-title"></h2>
+            <button type="button" aria-label="Close note">×</button>
+          </header>
+          <p></p>
+        </section>
       </div>
       <section class="card-showcase" aria-label="Featured cards">
         <section class="card-group card-group--works" aria-label="Works">
